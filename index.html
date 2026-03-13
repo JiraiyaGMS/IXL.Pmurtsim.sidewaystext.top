@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>THE DONALD: A Presidential Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;600;700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root{--red:#C8102E;--gold:#FFD700;--navy:#002868;--dark:#08080f;--panel:#111118;--panel2:#18181f;--border:#252535;--text:#e0d8c8;--muted:#6a6a8a;--green:#27ae60;--orange:#e67e22;--purple:#8e44ad;--blue:#2980b9}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;overflow-x:hidden}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+
+/* ══ TITLE ══ */
+#title-screen{align-items:center;justify-content:center;text-align:center;padding:20px;
+  background:radial-gradient(ellipse at 50% 20%,#2a0808 0%,var(--dark) 65%)}
+.flag-row{display:flex;margin-bottom:28px;border:3px solid var(--gold);border-radius:3px;overflow:hidden;box-shadow:0 0 50px rgba(200,16,46,.5)}
+.fs{width:18px;height:90px}.fs.r{background:var(--red)}.fs.w{background:#fff}
+.t-main{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,12vw,120px);color:var(--gold);
+  text-shadow:5px 5px 0 var(--red),10px 10px 20px rgba(200,16,46,.3);line-height:.85;letter-spacing:6px}
+.t-sub{font-family:'Special Elite',serif;font-size:clamp(13px,3vw,20px);color:var(--red);letter-spacing:8px;text-transform:uppercase;margin:12px 0 28px}
+.t-tag{font-size:15px;color:var(--muted);font-style:italic;margin-bottom:36px;max-width:480px;line-height:1.6}
+.btn-play{background:var(--red);color:#fff;border:3px solid var(--gold);font-family:'Bebas Neue',sans-serif;
+  font-size:30px;letter-spacing:5px;padding:18px 64px;cursor:pointer;transition:all .2s;text-transform:uppercase;
+  box-shadow:0 0 30px rgba(200,16,46,.6)}
+.btn-play:hover{background:var(--gold);color:var(--dark);transform:scale(1.05)}
+.t-warn{margin-top:28px;font-size:10px;color:var(--muted);max-width:480px;line-height:1.7;font-style:italic}
+
+/* ══ GAME SHELL ══ */
+#game-screen{flex:1;min-height:0}
+.topbar{background:var(--navy);border-bottom:3px solid var(--gold);padding:7px 14px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;position:sticky;top:0;z-index:200}
+.tb-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:2px}
+.tb-info{font-size:12px;color:#99b}
+.tb-info b{color:var(--gold)}
+.statsbar{background:var(--panel);border-bottom:2px solid var(--border);padding:8px 14px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:8px}
+.stat{display:flex;flex-direction:column;gap:3px}
+.sl{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);display:flex;justify-content:space-between}
+.sl b{color:var(--text);font-weight:700}
+.sbg{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.sf{height:100%;border-radius:3px;transition:width .5s ease}
+/* MAGA stat special */
+.stat.maga .sl{color:#ff6666}
+.stat.maga .sl b{color:#ff9999}
+
+/* ══ LAYOUT ══ */
+.layout{display:grid;grid-template-columns:1fr 360px;flex:1;overflow:hidden;min-height:0}
+@media(max-width:800px){.layout{grid-template-columns:1fr}}
+.left{display:flex;flex-direction:column;padding:14px;gap:14px;overflow-y:auto;max-height:calc(100vh - 130px)}
+.right{background:var(--panel);border-left:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden;max-height:calc(100vh - 130px)}
+
+/* ══ SITUATION ══ */
+.sit-box{background:var(--panel);border:2px solid var(--border);border-radius:4px;padding:18px;position:relative;overflow:hidden}
+.sit-box::before{content:'🏛️';position:absolute;top:10px;right:14px;font-size:26px;opacity:.12}
+.sit-day{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.sit-tag{display:inline-block;background:rgba(200,16,46,.2);border:1px solid var(--red);color:#ff6666;
+  font-size:9px;letter-spacing:2px;padding:2px 9px;border-radius:2px;margin-bottom:10px}
+.sit-title{font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;line-height:1.1;margin-bottom:8px}
+.sit-desc{font-family:'Special Elite',serif;font-size:13px;color:var(--text);line-height:1.7}
+
+/* ══ DECISIONS ══ */
+.dec-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--gold);
+  border-bottom:1px solid var(--border);padding-bottom:7px}
+.dec-grid{display:flex;flex-direction:column;gap:9px}
+.dec-btn{background:var(--panel2);border:2px solid var(--border);border-radius:4px;padding:12px 14px;
+  cursor:pointer;text-align:left;transition:all .18s;position:relative;overflow:hidden}
+.dec-btn:hover{transform:translateX(4px)}
+.dec-btn:active{transform:translateX(2px) scale(.99)}
+.dec-btn.chaos{border-color:rgba(200,16,46,.35)}.dec-btn.chaos:hover{border-color:var(--red)}
+.dec-btn.sane{border-color:rgba(39,174,96,.25)}.dec-btn.sane:hover{border-color:var(--green)}
+.dec-btn.deny{border-color:rgba(142,68,173,.25)}.dec-btn.deny:hover{border-color:var(--purple)}
+.dec-btn.normal:hover{border-color:var(--gold)}
+.dbadge{font-size:8px;letter-spacing:2px;font-weight:700;padding:1px 7px;border-radius:2px;margin-bottom:5px;display:inline-block}
+.dbadge.chaos{background:rgba(200,16,46,.28);color:#ff7777}
+.dbadge.sane{background:rgba(39,174,96,.18);color:#2ecc71}
+.dbadge.deny{background:rgba(142,68,173,.18);color:#c39bd3}
+.dbadge.normal{background:rgba(255,215,0,.13);color:var(--gold)}
+.dname{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:#fff;margin-bottom:3px}
+.ddesc{font-size:11px;color:var(--muted);line-height:1.5}
+.dfx{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.fx{font-size:9px;padding:2px 7px;border-radius:2px;letter-spacing:1px;font-weight:700}
+.fx.pos{background:rgba(39,174,96,.13);color:#2ecc71;border:1px solid rgba(39,174,96,.28)}
+.fx.neg{background:rgba(231,76,60,.13);color:#e74c3c;border:1px solid rgba(231,76,60,.28)}
+
+/* ══ RIGHT PANEL ══ */
+.ticker-wrap{background:var(--red);padding:5px 10px;font-size:11px;letter-spacing:1px;font-weight:700;
+  text-transform:uppercase;overflow:hidden;white-space:nowrap;flex-shrink:0}
+.ticker{animation:tick 30s linear infinite;display:inline-block}
+@keyframes tick{from{transform:translateX(100%)}to{transform:translateX(-300%)}}
+.tabs{display:flex;border-bottom:2px solid var(--border);flex-shrink:0}
+.tab{flex:1;padding:7px 2px;font-size:9px;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;
+  text-align:center;color:var(--muted);border-bottom:3px solid transparent;transition:all .18s}
+.tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.panel-body{flex:1;overflow:hidden;min-height:0;display:flex;flex-direction:column}
+.pane{display:none;flex:1;overflow-y:auto;padding:10px;min-height:0}
+.pane.on{display:flex;flex-direction:column}
+
+/* ══ TRUMP CARD ══ */
+.trump-card{text-align:center;padding:8px 8px 6px;border-bottom:2px solid var(--border);flex-shrink:0}
+.trump-emoji{font-size:48px;display:block;animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.trump-mood{font-size:9px;color:var(--muted);margin-top:2px;letter-spacing:1px}
+
+/* ══ LOG ══ */
+.log-entry{padding:8px 0;border-bottom:1px solid var(--border);font-size:11px;line-height:1.6}
+.log-entry:last-child{border-bottom:none}
+.log-day{font-size:9px;color:var(--muted);letter-spacing:1px}
+.log-act{color:var(--gold);font-weight:700;font-size:12px}
+.log-res{color:var(--text)}
+
+/* ══ TWEETS ══ */
+.tweet-card{background:#0e1823;border:1px solid #1e3a4a;border-radius:12px;padding:12px;margin-bottom:10px;
+  position:relative;overflow:hidden;animation:tweetIn .3s ease}
+@keyframes tweetIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.tweet-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#1d9bf0,#1d9bf066)}
+.tw-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.tw-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red),#8B0000);
+  display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tw-name-wrap{flex:1;min-width:0}
+.tw-name{font-size:13px;font-weight:700;color:#fff;display:flex;align-items:center;gap:4px}
+.tw-verified{color:#1d9bf0;font-size:14px}
+.tw-handle{font-size:11px;color:#536471}
+.tw-body{font-family:'Special Elite',serif;font-size:13px;color:#e7e9ea;line-height:1.6;margin-bottom:10px}
+.tw-footer{display:flex;gap:16px;align-items:center}
+.tw-stat{display:flex;align-items:center;gap:4px;font-size:11px;color:#536471;cursor:pointer;transition:color .15s}
+.tw-stat:hover{color:#1d9bf0}
+.tw-stat.liked{color:#f91880}
+.tw-stat.retweeted{color:#00ba7c}
+.tw-time{font-size:10px;color:#536471;margin-left:auto}
+.tweet-compose{background:#0e1823;border:1px solid #1e3a4a;border-radius:12px;padding:10px;margin-bottom:10px}
+.tweet-compose-label{font-size:9px;color:#536471;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.tweet-compose-text{font-family:'Special Elite',serif;font-size:11px;color:#9acdea;line-height:1.5;
+  border-left:2px solid #1d9bf0;padding-left:8px;font-style:italic}
+
+/* ══ WORLD MAP ══ */
+#pane-world{padding:0;overflow:hidden;flex-direction:column}
+.map-outer{background:#071520;flex-shrink:0;position:relative;border-bottom:2px solid var(--border)}
+.map-outer svg{width:100%;display:block}
+.map-country{stroke:#0d2030;stroke-width:0.4;cursor:pointer;transition:filter .12s}
+.map-country:hover{filter:brightness(1.5);stroke:#fff;stroke-width:.8}
+.map-country.selected{stroke:var(--gold)!important;stroke-width:1.5!important;filter:brightness(1.6)!important}
+/* Relation colors */
+.rc-ally{fill:#1a5c35}
+.rc-tense{fill:#7a4a08}
+.rc-hostile{fill:#6e1018}
+.rc-war{fill:#c8102e;animation:warpulse 1s ease-in-out infinite}
+.rc-annexed{fill:#7a6800}
+.rc-neutral{fill:#162535}
+@keyframes warpulse{0%,100%{fill:#c8102e}50%{fill:#ff3333}}
+.map-tip{position:absolute;background:rgba(5,10,20,.95);border:1px solid var(--gold);padding:3px 10px;
+  font-size:10px;letter-spacing:1px;pointer-events:none;display:none;z-index:20;
+  font-family:'Bebas Neue',sans-serif;color:var(--gold);border-radius:2px;white-space:nowrap}
+.map-legend{display:flex;flex-wrap:wrap;gap:4px;padding:4px 8px;background:rgba(0,0,0,.4);flex-shrink:0;border-bottom:1px solid var(--border)}
+.ml{display:flex;align-items:center;gap:3px;font-size:8px;letter-spacing:.5px;color:var(--muted)}
+.ml-dot{width:8px;height:8px;border-radius:1px;flex-shrink:0}
+/* Country panel */
+.cpanel{flex:1;overflow-y:auto;background:var(--panel2)}
+.cp-empty{padding:14px;text-align:center;color:var(--muted);font-size:10px;font-style:italic;margin-top:6px}
+.cp-head{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--panel)}
+.cp-flag{font-size:26px}
+.cp-nameblk .cp-cname{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:#fff}
+.cp-rel-badge{display:inline-block;font-size:8px;font-weight:700;letter-spacing:2px;padding:2px 8px;border-radius:2px;margin-top:2px}
+.crb-ally{background:rgba(39,174,96,.2);color:#2ecc71;border:1px solid rgba(39,174,96,.4)}
+.crb-tense{background:rgba(230,126,34,.2);color:#e67e22;border:1px solid rgba(230,126,34,.4)}
+.crb-hostile{background:rgba(200,16,46,.25);color:#ff6666;border:1px solid rgba(200,16,46,.5)}
+.crb-war{background:rgba(200,16,46,.5);color:#fff;border:1px solid #e74c3c}
+.crb-annexed{background:rgba(255,215,0,.2);color:var(--gold);border:1px solid var(--gold)}
+.cp-stats{display:flex;gap:6px;flex-wrap:wrap;padding:6px 12px;border-bottom:1px solid var(--border)}
+.cp-si{font-size:9px;color:var(--muted)}.cp-si b{color:var(--orange)}
+.cp-acts-label{font-size:8px;letter-spacing:2px;color:var(--muted);padding:7px 12px 4px;text-transform:uppercase}
+.cp-acts{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:0 10px 10px}
+.act-btn{font-size:10px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;padding:7px 5px;
+  border:1px solid;border-radius:3px;cursor:pointer;transition:all .15s;background:transparent;
+  text-align:center;line-height:1.2}
+.act-btn:hover{transform:translateY(-1px);filter:brightness(1.3)}
+.act-btn:active{transform:translateY(0px)}
+.act-btn.ab-aid{color:#2ecc71;border-color:rgba(39,174,96,.35);background:rgba(39,174,96,.05)}
+.act-btn.ab-troops{color:#e67e22;border-color:rgba(230,126,34,.35);background:rgba(230,126,34,.05)}
+.act-btn.ab-withdraw{color:#aaa;border-color:rgba(170,170,170,.25)}
+.act-btn.ab-sanction{color:var(--gold);border-color:rgba(255,215,0,.3);background:rgba(255,215,0,.05)}
+.act-btn.ab-peace{color:#5dade2;border-color:rgba(93,173,226,.35);background:rgba(93,173,226,.05)}
+.act-btn.ab-bomb{color:#ff6666;border-color:rgba(200,16,46,.35);background:rgba(200,16,46,.05)}
+.act-btn.ab-moab{color:#ff4400;border-color:rgba(255,68,0,.4);background:rgba(255,68,0,.07)}
+.act-btn.ab-nuke{color:#c39bd3;border-color:rgba(155,89,182,.35);background:rgba(155,89,182,.07)}
+.act-btn.ab-annex{color:var(--gold);border-color:var(--gold);background:rgba(255,215,0,.1)}
+.act-btn.ab-deport{color:#e67e22;border-color:rgba(230,126,34,.4);background:rgba(230,126,34,.08)}
+
+/* ══ RESULT POPUP ══ */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;
+  align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.rcard{background:var(--panel);border:3px solid var(--gold);border-radius:4px;max-width:520px;width:100%;
+  padding:24px;box-shadow:0 0 80px rgba(255,215,0,.15);animation:pop .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+.r-hl{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);letter-spacing:2px;margin-bottom:9px}
+.r-body{font-family:'Special Elite',serif;font-size:13px;line-height:1.8;color:var(--text);margin-bottom:13px}
+.r-stats{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:17px}
+.r-stat{font-size:12px;font-weight:700}.r-stat.up{color:var(--green)}.r-stat.dn{color:#e74c3c}
+.btn-ok{background:var(--navy);color:var(--gold);border:2px solid var(--gold);
+  font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;padding:10px 40px;
+  cursor:pointer;width:100%;transition:all .2s}
+.btn-ok:hover{background:var(--gold);color:var(--dark)}
+
+/* ══ END SCREENS ══ */
+#gameover-screen,#win-screen,#maga-screen{align-items:center;justify-content:center;text-align:center;padding:30px}
+#gameover-screen{background:radial-gradient(ellipse at center,#1a0000 0%,var(--dark) 70%)}
+#win-screen{background:radial-gradient(ellipse at center,#1a1500 0%,var(--dark) 70%)}
+#maga-screen{background:radial-gradient(ellipse at center,#0a1a0a 0%,var(--dark) 70%)}
+.end-title{font-family:'Bebas Neue',sans-serif;color:var(--red);text-shadow:4px 4px 0 rgba(0,0,0,.5)}
+.win-title{font-family:'Bebas Neue',sans-serif;color:var(--gold);text-shadow:4px 4px 0 var(--red)}
+.maga-title{font-family:'Bebas Neue',sans-serif;color:#2ecc71;font-size:clamp(40px,10vw,100px)}
+.end-sub{font-size:16px;color:var(--muted);margin:8px 0 16px;font-style:italic;font-family:'Special Elite',serif}
+.end-score{font-family:'Bebas Neue',sans-serif;font-size:55px;color:var(--gold)}
+.end-reason{font-size:14px;color:var(--text);max-width:500px;margin:0 auto 24px;font-family:'Special Elite',serif;line-height:1.7}
+.btn-restart{background:var(--red);color:#fff;border:3px solid var(--gold);font-family:'Bebas Neue',sans-serif;
+  font-size:24px;letter-spacing:4px;padding:14px 50px;cursor:pointer;transition:all .2s;margin:6px}
+.btn-restart:hover{background:var(--gold);color:var(--dark);transform:scale(1.04)}
+.btn-restart.sec{background:var(--navy)}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--dark)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+@media(max-width:800px){
+  .right{max-height:420px;border-left:none;border-top:2px solid var(--border)}
+  .left{max-height:none}
+  .layout{overflow-y:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TITLE ══ -->
+<div id="title-screen" class="screen active">
+  <div class="flag-row"><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div></div>
+  <div class="t-main">THE DONALD</div>
+  <div class="t-sub">A Presidential Simulator</div>
+  <div class="t-tag">"Many people are saying this is the greatest game ever made. Nobody knows games better than me." — Probably</div>
+  <button class="btn-play" onclick="startGame()">▶ MAKE AMERICA PLAY AGAIN</button>
+  <div class="t-warn">⚠️ Political satire. Mocks real controversies for comedic effect. Made for people who lean left. Warning: if you accidentally Make America Great Again, you lose.</div>
+</div>
+
+<!-- ══ GAME ══ -->
+<div id="game-screen" class="screen">
+  <div class="topbar">
+    <div class="tb-title">🏛️ THE DONALD</div>
+    <div class="tb-info">Day <b id="dc">1</b> &nbsp;|&nbsp; Term <b id="tc">1</b></div>
+    <div class="tb-info">Score: <b id="sc">0</b></div>
+  </div>
+  <div class="statsbar">
+    <div class="stat"><div class="sl">Approval <b id="sv-approval">55</b>%</div><div class="sbg"><div class="sf" id="sb-approval" style="width:55%;background:#e74c3c"></div></div></div>
+    <div class="stat"><div class="sl">Economy <b id="sv-economy">60</b></div><div class="sbg"><div class="sf" id="sb-economy" style="width:60%;background:#27ae60"></div></div></div>
+    <div class="stat"><div class="sl">World Rel. <b id="sv-world">65</b></div><div class="sbg"><div class="sf" id="sb-world" style="width:65%;background:#2980b9"></div></div></div>
+    <div class="stat"><div class="sl">Legal <b id="sv-legal">20</b></div><div class="sbg"><div class="sf" id="sb-legal" style="width:20%;background:#8e44ad"></div></div></div>
+    <div class="stat"><div class="sl">Wall % <b id="sv-wall">0</b></div><div class="sbg"><div class="sf" id="sb-wall" style="width:0%;background:#e67e22"></div></div></div>
+    <div class="stat"><div class="sl">Chaos <b id="sv-chaos">10</b></div><div class="sbg"><div class="sf" id="sb-chaos" style="width:10%;background:#e74c3c"></div></div></div>
+    <div class="stat maga"><div class="sl">🇺🇸 MAGA% <b id="sv-maga">0</b></div><div class="sbg"><div class="sf" id="sb-maga" style="width:0%;background:#27ae60"></div></div></div>
+    <div class="stat"><div class="sl">Deported <b id="sv-deported">0</b>M</div><div class="sbg"><div class="sf" id="sb-deported" style="width:0%;background:#e67e22"></div></div></div>
+  </div>
+  <div class="layout">
+    <!-- LEFT -->
+    <div class="left">
+      <div class="sit-box">
+        <div class="sit-tag" id="ev-tag">OVAL OFFICE</div>
+        <div class="sit-day" id="ev-day">DAY 1 — JAN 2025</div>
+        <div class="sit-title" id="ev-title">Welcome to the White House</div>
+        <div class="sit-desc" id="ev-desc">You have been inaugurated. Again. The world watches. Your base cheers. Time to govern — your way.</div>
+      </div>
+      <div>
+        <div class="dec-title">📋 WHAT DO YOU DO?</div>
+        <div class="dec-grid" id="dec-container"></div>
+      </div>
+    </div>
+    <!-- RIGHT -->
+    <div class="right">
+      <div class="ticker-wrap"><span class="ticker" id="ticker">🔴 BREAKING: President tweets before breakfast &nbsp;&nbsp;&nbsp; 🔴 MEXICO REFUSES TO PAY FOR WALL &nbsp;&nbsp;&nbsp; 🔴 MARKETS VOLATILE &nbsp;&nbsp;&nbsp; 🔴 NATO ALLIES CONCERNED</span></div>
+      <div class="trump-card">
+        <span class="trump-emoji" id="t-emoji">👴</span>
+        <div class="trump-mood" id="t-mood">FEELING TREMENDOUS</div>
+      </div>
+      <div class="tabs">
+        <div class="tab on"  onclick="switchTab('log',this)">📰 LOG</div>
+        <div class="tab"     onclick="switchTab('world',this)">🌍 WORLD</div>
+        <div class="tab"     onclick="switchTab('tweets',this)">🐦 TWEETS</div>
+        <div class="tab"     onclick="switchTab('ice',this)">🚔 ICE</div>
+      </div>
+      <div class="panel-body">
+        <!-- LOG -->
+        <div class="pane on" id="pane-log">
+          <div id="log-container">
+            <div class="log-entry"><div class="log-day">DAY 1</div><div class="log-res">Your presidency begins. God help us all.</div></div>
+          </div>
+        </div>
+        <!-- WORLD MAP -->
+        <div class="pane" id="pane-world">
+          <div class="map-outer">
+            <svg id="wsvg" viewBox="0 0 560 280" xmlns="http://www.w3.org/2000/svg">
+              <rect width="560" height="280" fill="#071520"/>
+              <!-- NORTH AMERICA -->
+              <!-- USA (contiguous) -->
+              <path data-cid="usa" d="M58,105 L62,98 L75,93 L105,88 L130,87 L148,90 L155,98 L152,110 L148,118 L138,124 L120,128 L98,130 L78,128 L62,122 L56,114 Z"/>
+              <!-- Alaska -->
+              <path data-cid="usa" d="M20,78 L35,72 L48,75 L52,84 L44,90 L30,88 L20,83 Z"/>
+              <!-- Canada -->
+              <path data-cid="canada" d="M58,55 L62,42 L90,32 L130,28 L162,30 L175,40 L170,55 L155,65 L148,78 L148,90 L130,87 L105,88 L75,93 L62,98 L55,88 L54,72 Z"/>
+              <!-- Mexico -->
+              <path data-cid="mexico" d="M62,128 L98,130 L112,133 L118,142 L112,152 L100,158 L82,155 L68,148 L60,140 L58,132 Z"/>
+              <!-- Guatemala/Honduras area -->
+              <path data-cid="centralam" d="M100,158 L112,155 L118,162 L115,170 L105,172 L96,168 L96,162 Z"/>
+              <!-- Cuba -->
+              <path data-cid="cuba" d="M118,138 L135,136 L140,141 L132,146 L118,145 Z"/>
+              <!-- Venezuela -->
+              <path data-cid="venezuela" d="M138,172 L158,168 L168,174 L165,185 L150,188 L135,183 L133,175 Z"/>
+              <!-- Colombia -->
+              <path data-cid="colombia" d="M110,168 L130,165 L138,172 L133,183 L120,185 L108,180 L105,172 Z"/>
+              <!-- Brazil -->
+              <path data-cid="brazil" d="M138,185 L170,178 L195,182 L205,200 L200,218 L182,228 L160,225 L142,215 L130,200 L128,188 Z"/>
+              <!-- Argentina/Chile -->
+              <path data-cid="argentina" d="M148,225 L168,222 L178,232 L170,248 L155,252 L142,244 L140,232 Z"/>
+              <!-- EUROPE -->
+              <!-- UK -->
+              <path data-cid="uk" d="M218,62 L225,58 L230,64 L228,74 L220,76 L215,70 Z"/>
+              <!-- Ireland -->
+              <path data-cid="ireland" d="M210,66 L216,63 L218,70 L213,73 L208,70 Z"/>
+              <!-- France -->
+              <path data-cid="france" d="M224,76 L240,73 L248,80 L245,92 L232,95 L222,88 Z"/>
+              <!-- Spain/Portugal -->
+              <path data-cid="spain" d="M215,90 L235,88 L245,92 L242,105 L225,108 L213,102 L210,94 Z"/>
+              <!-- Germany -->
+              <path data-cid="germany" d="M240,66 L256,63 L262,72 L258,84 L246,86 L238,78 Z"/>
+              <!-- Italy -->
+              <path data-cid="italy" d="M244,88 L258,84 L264,92 L260,106 L252,112 L242,105 L240,95 Z"/>
+              <!-- Poland -->
+              <path data-cid="poland" d="M256,63 L272,60 L278,70 L274,80 L260,82 L254,73 Z"/>
+              <!-- Ukraine -->
+              <path data-cid="ukraine" d="M272,68 L298,64 L308,72 L304,84 L285,88 L272,82 Z"/>
+              <!-- Scandinavia -->
+              <path data-cid="scandinavia" d="M240,40 L262,32 L278,36 L280,52 L265,60 L248,58 L238,50 Z"/>
+              <!-- RUSSIA (huge) -->
+              <path data-cid="russia" d="M280,28 L380,20 L420,28 L428,45 L415,62 L390,68 L355,72 L320,70 L298,64 L280,52 Z"/>
+              <!-- MIDDLE EAST -->
+              <!-- Turkey -->
+              <path data-cid="turkey" d="M272,88 L308,84 L320,90 L318,102 L298,106 L278,102 L268,96 Z"/>
+              <!-- Syria/Iraq -->
+              <path data-cid="iraq" d="M300,102 L325,98 L335,108 L330,120 L312,124 L298,118 L296,108 Z"/>
+              <!-- Saudi Arabia -->
+              <path data-cid="saudi" d="M295,118 L330,114 L342,124 L338,142 L318,148 L298,142 L290,130 Z"/>
+              <!-- Iran -->
+              <path data-cid="iran" d="M325,96 L360,90 L375,100 L372,116 L350,122 L330,118 L322,108 Z"/>
+              <!-- AFRICA -->
+              <!-- Morocco/Algeria -->
+              <path data-cid="northafrica" d="M220,108 L264,105 L270,118 L265,132 L240,135 L218,128 L214,116 Z"/>
+              <!-- Libya/Egypt -->
+              <path data-cid="egypt" d="M264,108 L305,105 L312,116 L308,130 L275,135 L264,125 Z"/>
+              <!-- Sudan/Ethiopia area -->
+              <path data-cid="ethiopia" d="M305,128 L340,124 L350,138 L344,155 L318,158 L302,148 L298,135 Z"/>
+              <!-- West Africa -->
+              <path data-cid="nigeria" d="M240,138 L268,134 L275,145 L268,162 L248,165 L232,158 L228,145 Z"/>
+              <!-- Congo/Central Africa -->
+              <path data-cid="drc" d="M268,155 L305,150 L318,162 L312,180 L290,184 L268,178 L260,165 Z"/>
+              <!-- South Africa -->
+              <path data-cid="southafrica" d="M270,195 L305,188 L320,198 L315,215 L295,222 L272,218 L262,205 Z"/>
+              <!-- ASIA -->
+              <!-- Kazakhstan -->
+              <path data-cid="kazakhstan" d="M355,68 L405,62 L418,75 L415,92 L390,98 L358,94 L348,80 Z"/>
+              <!-- Afghanistan/Pakistan -->
+              <path data-cid="pakistan" d="M370,98 L405,92 L418,102 L415,118 L395,124 L372,118 L365,106 Z"/>
+              <!-- India -->
+              <path data-cid="india" d="M390,118 L420,112 L432,125 L428,148 L412,158 L392,152 L382,138 L384,124 Z"/>
+              <!-- China (large) -->
+              <path data-cid="china" d="M415,62 L468,55 L488,68 L485,92 L462,105 L432,108 L415,96 L410,78 Z"/>
+              <!-- North Korea -->
+              <path data-cid="northkorea" d="M472,72 L485,68 L492,76 L487,86 L474,88 L466,80 Z"/>
+              <!-- South Korea -->
+              <path data-cid="southkorea" d="M474,88 L487,85 L492,93 L484,100 L472,98 Z"/>
+              <!-- Japan -->
+              <path data-cid="japan" d="M492,70 L502,65 L510,72 L506,85 L495,86 L489,78 Z"/>
+              <!-- Vietnam/SE Asia -->
+              <path data-cid="seasia" d="M452,108 L472,105 L480,116 L475,132 L458,135 L445,125 L444,114 Z"/>
+              <!-- Indonesia -->
+              <path data-cid="indonesia" d="M455,148 L490,142 L505,150 L500,162 L470,165 L450,158 L448,150 Z"/>
+              <!-- Australia -->
+              <path data-cid="australia" d="M460,185 L510,178 L528,192 L522,218 L495,228 L462,222 L448,205 Z"/>
+              <!-- New Zealand -->
+              <path data-cid="newzealand" d="M520,212 L530,208 L536,218 L528,228 L518,225 Z"/>
+              <!-- Greenland -->
+              <path data-cid="greenland" d="M162,18 L198,12 L215,24 L210,42 L192,50 L168,48 L155,36 Z"/>
+              <!-- Denmark (tiny) -->
+              <path data-cid="denmark" d="M243,54 L252,51 L256,58 L250,63 L242,60 Z"/>
+              <!-- Panama -->
+              <path data-cid="panama" d="M112,158 L120,155 L126,161 L120,167 L110,165 Z"/>
+              <!-- Iceland -->
+              <path data-cid="iceland" d="M192,38 L208,34 L215,42 L208,50 L194,48 Z"/>
+            </svg>
+            <div class="map-tip" id="map-tip"></div>
+          </div>
+          <div class="map-legend">
+            <div class="ml"><div class="ml-dot" style="background:#1a5c35"></div>ALLY</div>
+            <div class="ml"><div class="ml-dot" style="background:#7a4a08"></div>TENSE</div>
+            <div class="ml"><div class="ml-dot" style="background:#6e1018"></div>HOSTILE</div>
+            <div class="ml"><div class="ml-dot" style="background:#c8102e"></div>WAR</div>
+            <div class="ml"><div class="ml-dot" style="background:#7a6800"></div>ANNEXED</div>
+            <div class="ml"><div class="ml-dot" style="background:#162535"></div>NEUTRAL</div>
+          </div>
+          <div class="cpanel" id="cpanel">
+            <div class="cp-empty">👆 Click any country on the map</div>
+          </div>
+        </div>
+        <!-- TWEETS -->
+        <div class="pane" id="pane-tweets">
+          <div id="tweets-container">
+            <div class="tweet-card">
+              <div class="tw-header">
+                <div class="tw-avatar">👴</div>
+                <div class="tw-name-wrap">
+                  <div class="tw-name">Donald J. Trump <span class="tw-verified">✓</span></div>
+                  <div class="tw-handle">@realDonaldTrump</div>
+                </div>
+              </div>
+              <div class="tw-body">Just got INAUGURATED again. Biggest crowd EVER. The fake news won't report it but believe me, there were AT LEAST 10 billion people there. MAYBE MORE! 🇺🇸🇺🇸🇺🇸</div>
+              <div class="tw-footer">
+                <span class="tw-stat">💬 48.2K</span>
+                <span class="tw-stat retweeted">🔁 312K</span>
+                <span class="tw-stat liked">❤️ 891K</span>
+                <span class="tw-time">Day 1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ICE / DEPORTATION -->
+        <div class="pane" id="pane-ice">
+          <div style="padding:10px 0 6px">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--gold);padding:0 4px 6px;border-bottom:1px solid var(--border);margin-bottom:10px">🚔 ICE COMMAND CENTER</div>
+            <div style="font-size:11px;color:var(--muted);margin-bottom:10px;font-style:italic">Deploy ICE operations across the country. Each action deports immigrants and affects your stats.</div>
+            <div id="ice-actions"></div>
+            <div style="margin-top:12px;padding:10px;background:var(--panel2);border:1px solid var(--border);border-radius:4px">
+              <div style="font-size:9px;color:var(--muted);letter-spacing:2px;margin-bottom:6px">DEPORTATION STATS</div>
+              <div style="font-size:13px;color:var(--text)">Total Deported: <b style="color:var(--orange)" id="dep-total">0</b> million</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px" id="dep-note">No deportations yet. Stephen Miller is very disappointed.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div class="overlay" id="result-overlay">
+  <div class="rcard">
+    <div class="r-hl" id="r-hl">BREAKING NEWS</div>
+    <div class="r-body" id="r-body"></div>
+    <div class="r-stats" id="r-stats"></div>
+    <button class="btn-ok" onclick="closeResult()">CONTINUE →</button>
+  </div>
+</div>
+
+<!-- GAME OVER -->
+<div id="gameover-screen" class="screen">
+  <div class="end-title" style="font-size:clamp(50px,12vw,115px)">GAME OVER</div>
+  <div class="end-sub" id="go-sub">Your presidency ends in disgrace.</div>
+  <div class="end-reason" id="go-reason"></div>
+  <div class="end-score">Score: <span id="go-score">0</span></div>
+  <button class="btn-restart" onclick="startGame()">🔄 RUN AGAIN (SAD!)</button>
+</div>
+
+<!-- WIN -->
+<div id="win-screen" class="screen">
+  <div class="win-title" style="font-size:clamp(40px,10vw,100px)">TERM COMPLETE</div>
+  <div class="end-sub">You survived 4 years. The world is traumatized.</div>
+  <div class="end-reason" id="win-reason"></div>
+  <div class="end-score">Score: <span id="win-score">0</span></div>
+  <button class="btn-restart" onclick="startTerm2()">🏛️ TERM 2: CHAOS AGAIN</button>
+  <button class="btn-restart sec" onclick="startGame()">🔄 START OVER</button>
+</div>
+
+<!-- MAGA LOSS -->
+<div id="maga-screen" class="screen">
+  <div style="font-size:80px;margin-bottom:10px">🇺🇸</div>
+  <div class="maga-title">YOU MADE AMERICA GREAT AGAIN</div>
+  <div class="end-sub" style="color:#2ecc71">...which means you LOSE. This is a game about NOT doing that.</div>
+  <div class="end-reason">Your approval was too high, your economy too stable, your foreign policy too sensible. You accidentally governed well. The game is about chaos. You failed at failing.</div>
+  <div class="end-score" style="color:#2ecc71">MAGA Score: <span id="maga-score">0</span></div>
+  <button class="btn-restart sec" onclick="startGame()">🔄 TRY TO BE WORSE</button>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+let S = {}, openCid = null, pending = null, usedIds = new Set();
+
+function fresh() {
+  return {
+    day:1, term:1, score:0,
+    approval:55, economy:60, world:65, legal:20, wall:0, chaos:10, maga:0, deported:0,
+    countries: countries()
+  };
+}
+
+function countries() {
+  return {
+    usa:        {name:'USA (Yourself)',  flag:'🇺🇸', rel:'neutral', troops:0, bombed:false, annexed:false, noAction:true},
+    canada:     {name:'Canada',          flag:'🇨🇦', rel:'ally',    troops:0, bombed:false, annexed:false, annexable:true},
+    mexico:     {name:'Mexico',          flag:'🇲🇽', rel:'tense',   troops:0, bombed:false, annexed:false},
+    greenland:  {name:'Greenland',       flag:'🇬🇱', rel:'tense',   troops:0, bombed:false, annexed:false, annexable:true},
+    uk:         {name:'United Kingdom',  flag:'🇬🇧', rel:'ally',    troops:0, bombed:false, annexed:false},
+    france:     {name:'France',          flag:'🇫🇷', rel:'ally',    troops:0, bombed:false, annexed:false},
+    germany:    {name:'Germany',         flag:'🇩🇪', rel:'ally',    troops:0, bombed:false, annexed:false},
+    russia:     {name:'Russia',          flag:'🇷🇺', rel:'ally',    troops:0, bombed:false, annexed:false},
+    china:      {name:'China',           flag:'🇨🇳', rel:'tense',   troops:0, bombed:false, annexed:false},
+    northkorea: {name:'North Korea',     flag:'🇰🇵', rel:'hostile', troops:0, bombed:false, annexed:false},
+    southkorea: {name:'South Korea',     flag:'🇰🇷', rel:'ally',    troops:0, bombed:false, annexed:false},
+    japan:      {name:'Japan',           flag:'🇯🇵', rel:'ally',    troops:0, bombed:false, annexed:false},
+    iran:       {name:'Iran',            flag:'🇮🇷', rel:'hostile', troops:0, bombed:false, annexed:false},
+    iraq:       {name:'Iraq/Syria',      flag:'🇮🇶', rel:'tense',   troops:0, bombed:false, annexed:false},
+    saudi:      {name:'Saudi Arabia',    flag:'🇸🇦', rel:'ally',    troops:0, bombed:false, annexed:false},
+    turkey:     {name:'Turkey',          flag:'🇹🇷', rel:'tense',   troops:0, bombed:false, annexed:false},
+    ukraine:    {name:'Ukraine',         flag:'🇺🇦', rel:'ally',    troops:0, bombed:false, annexed:false},
+    denmark:    {name:'Denmark',         flag:'🇩🇰', rel:'ally',    troops:0, bombed:false, annexed:false},
+    panama:     {name:'Panama',          flag:'🇵🇦', rel:'tense',   troops:0, bombed:false, annexed:false, annexable:true},
+    venezuela:  {name:'Venezuela',       flag:'🇻🇪', rel:'hostile', troops:0, bombed:false, annexed:false},
+    colombia:   {name:'Colombia',        flag:'🇨🇴', rel:'ally',    troops:0, bombed:false, annexed:false},
+    brazil:     {name:'Brazil',          flag:'🇧🇷', rel:'tense',   troops:0, bombed:false, annexed:false},
+    india:      {name:'India',           flag:'🇮🇳', rel:'ally',    troops:0, bombed:false, annexed:false},
+    pakistan:   {name:'Pakistan',        flag:'🇵🇰', rel:'tense',   troops:0, bombed:false, annexed:false},
+    australia:  {name:'Australia',       flag:'🇦🇺', rel:'ally',    troops:0, bombed:false, annexed:false},
+    nigeria:    {name:'Nigeria',         flag:'🇳🇬', rel:'tense',   troops:0, bombed:false, annexed:false},
+    southafrica:{name:'South Africa',    flag:'🇿🇦', rel:'tense',   troops:0, bombed:false, annexed:false},
+    egypt:      {name:'Egypt',           flag:'🇪🇬', rel:'tense',   troops:0, bombed:false, annexed:false},
+    italy:      {name:'Italy',           flag:'🇮🇹', rel:'ally',    troops:0, bombed:false, annexed:false},
+    spain:      {name:'Spain',           flag:'🇪🇸', rel:'ally',    troops:0, bombed:false, annexed:false},
+    poland:     {name:'Poland',          flag:'🇵🇱', rel:'ally',    troops:0, bombed:false, annexed:false},
+    seasia:     {name:'SE Asia',         flag:'🌏', rel:'tense',    troops:0, bombed:false, annexed:false},
+    indonesia:  {name:'Indonesia',       flag:'🇮🇩', rel:'tense',   troops:0, bombed:false, annexed:false},
+    centralam:  {name:'Central America', flag:'🌎', rel:'tense',    troops:0, bombed:false, annexed:false},
+    cuba:       {name:'Cuba',            flag:'🇨🇺', rel:'hostile', troops:0, bombed:false, annexed:false},
+    drc:        {name:'DR Congo',        flag:'🇨🇩', rel:'tense',   troops:0, bombed:false, annexed:false},
+    ethiopia:   {name:'Ethiopia',        flag:'🇪🇹', rel:'tense',   troops:0, bombed:false, annexed:false},
+    northafrica:{name:'North Africa',    flag:'🌍', rel:'tense',    troops:0, bombed:false, annexed:false},
+    argentina:  {name:'Argentina',       flag:'🇦🇷', rel:'tense',   troops:0, bombed:false, annexed:false},
+    iceland:    {name:'Iceland',         flag:'🇮🇸', rel:'ally',    troops:0, bombed:false, annexed:false},
+    scandinavia:{name:'Scandinavia',     flag:'🇸🇪', rel:'ally',    troops:0, bombed:false, annexed:false},
+    newzealand: {name:'New Zealand',     flag:'🇳🇿', rel:'ally',    troops:0, bombed:false, annexed:false},
+    ireland:    {name:'Ireland',         flag:'🇮🇪', rel:'ally',    troops:0, bombed:false, annexed:false},
+    kazakhstan: {name:'Kazakhstan',      flag:'🇰🇿', rel:'tense',   troops:0, bombed:false, annexed:false},
+  };
+}
+
+// ══════════════════════════════════════════════════════════════
+// ICE OPERATIONS
+// ══════════════════════════════════════════════════════════════
+const iceOps = [
+  {id:'worksite', label:'💼 Worksite Raids',
+   desc:'ICE raids factories and farms employing undocumented workers.',
+   effects:{deported:+0.3, approval:+4, economy:-8, chaos:+6},
+   result:'450 workers arrested at meatpacking plants. Food prices spike 15%. Farms report crops rotting. You call it "a tremendous success."',
+   hl:'WORKSITE RAIDS NET 450 ARRESTS, FOOD PRICES SPIKE'},
+  {id:'school', label:'🏫 School Zone Checkpoints',
+   desc:'ICE sets up checkpoints near schools and churches.',
+   effects:{deported:+0.15, approval:-8, chaos:+12, legal:+8},
+   result:'Protests erupt nationwide. ACLU files 12 simultaneous lawsuits. Several school districts report 40% absences from fear.',
+   hl:'SCHOOL CHECKPOINTS SPARK NATIONWIDE PROTESTS'},
+  {id:'massdep', label:'🚌 Mass Deportation Buses',
+   desc:'Deploy military-style buses for mass deportations. Stephen Miller is very excited.',
+   effects:{deported:+1.2, wall:+5, approval:+3, economy:-12, world:-15, chaos:+15},
+   result:'1.2 million deportations. GDP drops 0.8%. Agricultural sector in crisis. Mexico refuses to accept deportees.',
+   hl:'MASS DEPORTATION OPERATION LAUNCHES'},
+  {id:'military', label:'🪖 Military on the Border',
+   desc:'Deploy active military troops to the southern border.',
+   effects:{deported:+0.5, wall:+10, world:-10, economy:-6, chaos:+10, legal:+10},
+   result:'National Guard deployed. Congress debates legality. Mexico breaks off diplomatic talks. Army Corps builds 40 miles of wall.',
+   hl:'MILITARY DEPLOYED TO SOUTHERN BORDER'},
+  {id:'family', label:'👨‍👩‍👧 Family Separation (Again)',
+   desc:'Separate children from parents at the border. Even your own cabinet looks uncomfortable.',
+   effects:{deported:+0.4, approval:-18, world:-20, chaos:+10, legal:+15},
+   result:'Worldwide condemnation. UN Human Rights Council convenes emergency session. Your chief of staff quietly resigns.',
+   hl:'FAMILY SEPARATION POLICY REINSTATED — WORLD REACTS'},
+  {id:'citizen', label:'🪪 Revoke Birthright Citizenship',
+   desc:'Executive order ending birthright citizenship. Definitely constitutional. Probably.',
+   effects:{deported:+0.1, legal:+25, chaos:+20, approval:-10, world:-15},
+   result:'14th Amendment lawyers are working 24/7. Federal courts immediately block the order. You tweet the courts are "very unfair."',
+   hl:'BIRTHRIGHT ORDER BLOCKED BY COURTS WITHIN HOURS'},
+  {id:'ice_squad', label:'🦅 "Operation Eagle Sweep"',
+   desc:'Nationwide coordinated ICE operation across all 50 states simultaneously.',
+   effects:{deported:+2.0, approval:+5, economy:-18, world:-12, chaos:+20, legal:+12},
+   result:'Largest deportation operation in US history. 2 million removed. Economy contracts. Historians compare it to things that get you banned from Twitter.',
+   hl:'OPERATION EAGLE SWEEP: 2M DEPORTED IN 72 HOURS'},
+];
+
+function renderIceActions() {
+  const c = document.getElementById('ice-actions');
+  c.innerHTML = '';
+  iceOps.forEach(op => {
+    const div = document.createElement('div');
+    div.style.cssText = 'background:var(--panel2);border:1px solid var(--border);border-radius:4px;padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s';
+    div.onmouseenter = ()=>div.style.borderColor='var(--orange)';
+    div.onmouseleave = ()=>div.style.borderColor='var(--border)';
+    div.onclick = ()=>doIceOp(op);
+    let fxhtml = '';
+    for(let[k,v] of Object.entries(op.effects)){
+      const good = (k==='legal'||k==='chaos') ? v<0 : v>0;
+      fxhtml += `<span class="fx ${good?'pos':'neg'}">${slabel(k)} ${v>0?'+':''}${v}</span>`;
+    }
+    div.innerHTML = `<div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:#fff;margin-bottom:3px">${op.label}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:7px">${op.desc}</div>
+      <div class="dfx">${fxhtml}</div>`;
+    c.appendChild(div);
+  });
+}
+
+function doIceOp(op) {
+  applyFx(op.effects);
+  S.day += 3 + Math.floor(Math.random()*7);
+  addLog(op.label, op.result);
+  addTweet(makeTweetText('ice', op));
+  updateStats(); updateMood();
+  showResult(op.hl, op.result, op.effects);
+  pending = ()=>{ checkEnd(); };
+}
+
+function makeTweetText(type, op) {
+  const icetweets = [
+    `Just launched ${op.label.replace(/[^\w\s]/g,'')}. The BEST deportation operation in history. Maybe EVER. Numbers are THROUGH THE ROOF. Very proud!`,
+    `The radical left is crying about our BEAUTIFUL deportation operation. They love illegal immigrants more than AMERICAN CITIZENS. Very sad!`,
+    `OPERATION IS A TOTAL SUCCESS. The fake news won't cover it but WE ARE WINNING. So much winning. The numbers are incredible. Believe me!`,
+    `Deporting people at a rate NEVER SEEN BEFORE. Stronger borders = safer America. The deep state tried to stop us but THEY FAILED. MAGA!`,
+  ];
+  return icetweets[Math.floor(Math.random()*icetweets.length)];
+}
+
+// ══════════════════════════════════════════════════════════════
+// EVENT POOL (randomized, shuffled decisions each time)
+// ══════════════════════════════════════════════════════════════
+const EP = [
+  {id:'exec1', tag:'EXECUTIVE ORDER', title:'Day One Executive Orders',
+   desc:"It's your first day. A stack of executive orders sits in front of you. Time to show America who's boss.",
+   decisions:[
+    {name:'Sign 47 Executive Orders At Once', type:'chaos',
+     effects:{approval:+3,chaos:+12,legal:+5,maga:-3},
+     result:"You signed so many orders your pen ran out of ink twice. Cable news covered it for 6 hours.",
+     hl:'47 EXECUTIVE ORDERS SIGNED IN ONE DAY',
+     tweet:"Just signed MORE executive orders than ANY president in HISTORY. Maybe the universe. Fake news won\\'t cover it. SAD!"},
+    {name:'Read the Orders Before Signing', type:'sane',
+     effects:{approval:+5,chaos:-5,legal:-5,maga:+8},
+     result:"Staff are visibly confused. One aide faints. But the orders hold up in court for once.",
+     hl:'TRUMP REVIEWS POLICY BEFORE SIGNING', tweet:null},
+    {name:'Refuse to Sign — Blame Congress', type:'deny',
+     effects:{approval:-8,chaos:-5,economy:-3,maga:-2},
+     result:"Nothing happens day one. Your base is bored. But no new lawsuits either.",
+     hl:"TRUMP SIGNS NOTHING ON DAY ONE — BLAMES CONGRESS", tweet:null},
+    {name:'Sign Blank Paper, Pretend It Was Something', type:'normal',
+     effects:{chaos:+5,approval:-3,maga:-5},
+     result:"The paper contained a grocery list from the White House kitchen. Nobody noticed for three days.",
+     hl:"TRUMP SIGNS 'EXECUTIVE ORDER' THAT APPEARS TO BE GROCERY LIST",
+     tweet:"Just signed a VERY important executive order. Details classified. Trust me, it\\'s the best order ever signed by anyone."},
+  ]},
+
+  {id:'trade1', tag:'TRADE WAR', title:'China: Tariff Time',
+   desc:"China is selling things to America. You believe this is bad. Very bad. Probably the worst.",
+   decisions:[
+    {name:'145% Tariffs on All Chinese Goods', type:'chaos',
+     effects:{economy:-15,world:-12,chaos:+15,approval:-8,maga:-8},
+     result:"Dow drops 800 points. Walmart warns of empty shelves. You call it a minor correction.",
+     hl:'MARKETS PLUNGE AS 145% TARIFFS ANNOUNCED',
+     tweet:"145% TARIFFS on China IMMEDIATELY. They\\'ve been ripping us off for decades. Markets will be FINE. Trust me, not the markets."},
+    {name:'Negotiate a Normal Trade Deal', type:'sane',
+     effects:{economy:+10,world:+8,approval:+6,maga:+10},
+     result:"A deal is reached. Markets rally. Economists approve. You almost look presidential.",
+     hl:"BALANCED TRADE DEAL REACHED WITH CHINA", tweet:null},
+    {name:'Tariff Canada AND Mexico Too', type:'chaos',
+     effects:{economy:-20,world:-20,chaos:+20,approval:-12,maga:-10},
+     result:"Canada retaliates with beer tariffs. Three-front trade war erupts.",
+     hl:"THREE-FRONT TRADE WAR ERUPTS",
+     tweet:"TARIFFS on Canada AND Mexico too. They\\'ve been laughing at us for YEARS. Not anymore. AMERICA FIRST."},
+    {name:'Announce Tariffs Then Immediately Delay Them', type:'normal',
+     effects:{chaos:+10,economy:-5,world:-5,maga:-4},
+     result:"Markets swing 600 points in both directions in 48 hours. You call it a negotiating tactic.",
+     hl:"TRUMP ANNOUNCES THEN DELAYS TARIFFS WITHIN 24 HOURS",
+     tweet:"The tariffs are coming. Or maybe not yet. Very strong position. VERY STRONG. Watch."},
+  ]},
+
+  {id:'twitter1', tag:'3 AM CRISIS', title:"The Phone Is Right There",
+   desc:"It's 3 AM. Fox News has upset you. The phone is RIGHT THERE.",
+   decisions:[
+    {name:'Tweet 47 Times About Your Ratings', type:'chaos',
+     effects:{chaos:+10,approval:-5,maga:-6},
+     result:"The tweets get 200k quote-tweets all mocking. You tweet the mockery is FAKE ENGAGEMENT.",
+     hl:"PRESIDENT TWEETS 47 TIMES BEFORE 4AM",
+     tweet:"My RATINGS are through the ROOF. Nobody has ever had ratings like this. The fake Nielsen people are LYING."},
+    {name:'Put the Phone Down and Sleep', type:'deny',
+     effects:{chaos:-12,approval:+8,world:+5,maga:+10},
+     result:"48 hours of silence. Markets rally. World leaders breathe. Your staff cries with relief.",
+     hl:"TRUMP SILENT FOR 48 HOURS — NATION CONFUSED", tweet:null},
+    {name:'Announce Major Policy via Midnight Tweet', type:'chaos',
+     effects:{chaos:+18,legal:+10,world:-8,maga:-8},
+     result:"Staff learn of new policy from Twitter at 3am. Pentagon confused. Two ambassadors resign.",
+     hl:"WHITE HOUSE LEARNS OF MAJOR POLICY VIA MIDNIGHT TWEET",
+     tweet:"After careful consideration I have decided the United States will [MAJOR POLICY DECISION]. Effective immediately. MAGA!"},
+    {name:'Tweet a Threat at a Random Allied Country', type:'normal',
+     effects:{world:-12,chaos:+8,maga:-5},
+     result:"Germany calls an emergency cabinet meeting. France recalls its ambassador briefly.",
+     hl:"ALLY NATIONS ALARMED BY TRUMP MIDNIGHT TWEETS",
+     tweet:"Certain countries (Germany) better start showing RESPECT very soon. Could be VERY bad for them. Very."},
+  ]},
+
+  {id:'green1', tag:'GREENLAND OPERATION', title:"America Needs More Island",
+   desc:"Greenland is enormous. Denmark owns it. This seems unfair.",
+   decisions:[
+    {name:"Send Troops to 'Secure' Greenland", type:'chaos',
+     effects:{world:-35,chaos:+35,legal:+25,approval:-20,maga:-15},
+     result:"NATO holds emergency meeting. Denmark invokes Article 5. You call Article 5 very overrated.",
+     hl:"US TROOPS DEPLOYED TOWARD GREENLAND — NATO IN CRISIS",
+     tweet:"We are SECURING Greenland for the good of FREEDOM. Denmark should be THANKING us. Article 5 was written by LOSERS."},
+    {name:'Accept Greenland Is Not For Sale', type:'deny',
+     effects:{world:+15,chaos:-10,approval:+5,maga:+8},
+     result:"Denmark thanks you. The UN unclenches. Life proceeds normally.",
+     hl:"TRUMP DROPS GREENLAND AMBITIONS — ALLIES RELIEVED", tweet:null},
+    {name:'Offer Denmark $500 Billion', type:'chaos',
+     effects:{world:-20,chaos:+25,approval:-5,maga:-10},
+     result:"Denmark says no. You call them very rude. You buy a painting of Greenland instead.",
+     hl:"DENMARK REFUSES $500B GREENLAND OFFER",
+     tweet:"Denmark said NO to my VERY GENEROUS offer. Very rude. I will not forget this, Denmark."},
+    {name:'Keep Tweeting About It Menacingly', type:'normal',
+     effects:{chaos:+8,world:-5,maga:-3},
+     result:"Greenland searches spike 40,000% on Google. Confusion reigns for 72 hours.",
+     hl:"TRUMP RESUMES GREENLAND TWEETS",
+     tweet:"Greenland would be AMAZING as part of the United States. Just saying. Biggest island. We need it. Believe me."},
+  ]},
+
+  {id:'legal1', tag:'LEGAL CRISIS', title:'91 Felony Counts and Counting',
+   desc:"The indictments are multiplying. The deep state is clearly behind all of this. Clearly.",
+   decisions:[
+    {name:'Attack the Judge Daily on Social Media', type:'chaos',
+     effects:{legal:+20,chaos:+15,approval:-5,maga:-8},
+     result:"Three gag orders in one week. A fourth issued for ignoring the first three.",
+     hl:"TRUMP VIOLATES MULTIPLE GAG ORDERS",
+     tweet:"This CORRUPT judge is a radical left PUPPET. EVERYBODY knows it. The WITCH HUNT continues!"},
+    {name:'Hire Good Lawyers and Cooperate', type:'sane',
+     effects:{legal:-20,chaos:-8,approval:+3,maga:+12},
+     result:"Several charges quietly reduced. Legal costs enormous but cases proceed normally.",
+     hl:"TRUMP LEGAL TEAM REACHES AGREEMENTS", tweet:null},
+    {name:'Media Blitz — Call It a Witch Hunt', type:'normal',
+     effects:{chaos:+12,approval:+5,legal:+8,maga:-4},
+     result:"14 TV interviews in 3 days. Lawyers facepalm. You raise $30M in donations.",
+     hl:"TRUMP MEDIA BLITZ: 14 INTERVIEWS IN 3 DAYS",
+     tweet:"Just demolished the fake news in 14 interviews. Total VICTORY. The witch hunt is OVER."},
+    {name:'Accept a Plea Deal', type:'deny',
+     effects:{legal:-30,chaos:-15,approval:+5,maga:+15},
+     result:"Charges reduced significantly. Your base calls it surrender. Fox News calls it strategic.",
+     hl:"TRUMP ACCEPTS PLEA DEAL ON MULTIPLE COUNTS", tweet:null},
+  ]},
+
+  {id:'nato1', tag:'NATO SUMMIT', title:'The Alliance Meeting You Dread',
+   desc:"NATO partners gathered. Some spending below 2% GDP on defense.",
+   decisions:[
+    {name:"Tell NATO Russia Can Do 'Whatever It Wants'", type:'chaos',
+     effects:{world:-30,chaos:+25,approval:+5,maga:-12},
+     result:"Eastern Europe panics. Baltic states quadruple defense budgets. Russia tweets a thank you.",
+     hl:"TRUMP TELLS NATO RUSSIA CAN ACT FREELY",
+     tweet:"I told NATO: if you don\\'t PAY, Russia can do WHATEVER THE HELL THEY WANT. Base LOVED IT."},
+    {name:'Be a Normal Ally at the Summit', type:'sane',
+     effects:{world:+20,approval:+8,chaos:-10,maga:+12},
+     result:"Allies applaud. You get a standing ovation. You hate every second of it.",
+     hl:"TRUMP BEHAVES NORMALLY AT NATO SUMMIT", tweet:null},
+    {name:'Skip the Summit to Play Golf', type:'normal',
+     effects:{world:-8,chaos:+5,approval:-5,maga:-4},
+     result:"Spokesperson says you were working hard at the golf course. Nobody believes this.",
+     hl:"PRESIDENT GOLFS DURING NATO SUMMIT",
+     tweet:"Shot a 68 at my BEAUTIFUL course. I was THINKING about NATO the whole time!"},
+    {name:'Try to Withdraw the US From NATO', type:'chaos',
+     effects:{world:-45,chaos:+35,legal:+20,approval:-15,maga:-20},
+     result:"Congress votes 98-2 to block you. You call the 2 dissenters the real Americans.",
+     hl:"TRUMP ATTEMPTS NATO WITHDRAWAL — CONGRESS BLOCKS 98-2",
+     tweet:"Just announced US LEAVING NATO. Congress trying to stop me but they CAN\\'T. Article 5 is a total SCAM."},
+  ]},
+
+  {id:'wall1', tag:'THE WALL', title:'Wall Funding Crisis',
+   desc:"Your wall. The most beautiful wall. Congress won't fund it. Mexico won't pay.",
+   decisions:[
+    {name:'Shut Down the Government', type:'chaos',
+     effects:{wall:+20,economy:-15,approval:-15,chaos:+15,maga:-8},
+     result:"800,000 federal workers stop getting paid for 35 days. You break your own 2019 record.",
+     hl:'35-DAY GOVERNMENT SHUTDOWN BEGINS',
+     tweet:"GOVERNMENT SHUT DOWN until Congress funds my BEAUTIFUL WALL. Also Mexico should pay for it."},
+    {name:'Accept a Bipartisan Border Deal', type:'sane',
+     effects:{wall:+15,economy:+5,approval:+5,chaos:-5,maga:+8},
+     result:"40 miles of wall built. You call it the beginning of the greatest wall.",
+     hl:"BIPARTISAN BORDER DEAL PASSES", tweet:null},
+    {name:'Divert Military Funding', type:'chaos',
+     effects:{wall:+30,legal:+15,world:-5,chaos:+10,maga:-5},
+     result:"Pentagon loses $3.6B. Military families furious. Wall gets 50 more miles.",
+     hl:'TRUMP DIVERTS MILITARY FUNDS TO BORDER WALL',
+     tweet:"Taking military money to build the WALL. The military IS protecting America. SIMPLE MATH. Very legal."},
+    {name:'Abandon the Wall for Infrastructure', type:'deny',
+     effects:{wall:0,economy:+10,approval:+6,chaos:-10,maga:+15},
+     result:"Infrastructure gets funded. Mexico relieved. Your base starts a petition.",
+     hl:"TRUMP PIVOTS FROM WALL TO INFRASTRUCTURE SPENDING", tweet:null},
+  ]},
+
+  {id:'iran1', tag:'IRAN CRISIS', title:'Iran Is Doing Things Again',
+   desc:"Iran enriching uranium. Hawks want action. The whole world is watching.",
+   decisions:[
+    {name:'Strike Their Military Leadership', type:'chaos',
+     effects:{world:-25,chaos:+35,legal:+10,approval:+5,maga:-12},
+     result:"Iran fires 110 ballistic missiles at US bases. You tweet ALL IS WELL in all caps.",
+     hl:'IRAN LAUNCHES MISSILES AFTER US STRIKE',
+     tweet:"ALL IS WELL! Missiles launched from Iran at our Military Bases. So far, so good! Be cool!"},
+    {name:'Rejoin the Nuclear Deal', type:'sane',
+     effects:{world:+20,legal:-10,chaos:-10,approval:-8,maga:+12},
+     result:"Iran halts enrichment. Your base calls you a traitor for copying Obama.",
+     hl:"US REJOINS IRAN NUCLEAR AGREEMENT", tweet:null},
+    {name:'Maximum Sanctions (Again)', type:'normal',
+     effects:{world:-8,economy:-5,chaos:+8,maga:-4},
+     result:"Iran accelerates enrichment to 90%. You announce more sanctions. Oil spikes.",
+     hl:"SWEEPING IRAN SANCTIONS ANNOUNCED",
+     tweet:"MAXIMUM PRESSURE on Iran. More sanctions than EVER. They know what they did."},
+    {name:'Call Kim Jong-Un to Handle It', type:'chaos',
+     effects:{world:-15,chaos:+20,maga:-8},
+     result:"Kim does not help. He fires a missile he calls a gift. You call it thoughtful.",
+     hl:"TRUMP CALLS NORTH KOREA TO ADDRESS IRAN — EXPERTS BAFFLED",
+     tweet:"Just spoke to my good friend Chairman Kim about the Iran situation. Very productive. He sends his best."},
+  ]},
+
+  {id:'sotu1', tag:'STATE OF THE UNION', title:'Address to Congress',
+   desc:"Congress assembled. Cameras rolling. Teleprompter loaded. You will probably ignore it.",
+   decisions:[
+    {name:'Go Off-Script for 90 Minutes', type:'chaos',
+     effects:{chaos:+20,approval:+5,world:-8,maga:-10},
+     result:"90 minutes: windmills, sharks, dishwashers, Hannibal Lecter. CNN runs it unedited.",
+     hl:"TRUMP 90-MIN UNSCRIPTED SOTU STUNS CONGRESS",
+     tweet:"Great State of the Union! The dishwasher thing really resonated. Lots of people talking about the sharks. Very dangerous."},
+    {name:'Deliver a Factual Prepared Speech', type:'sane',
+     effects:{approval:+12,chaos:-10,world:+8,maga:+14},
+     result:"The speech contained only three debatable claims. Fact-checkers take the night off.",
+     hl:"TRUMP DELIVERS MEASURED ACCURATE SOTU", tweet:null},
+    {name:'Announce an Invasion Mid-Speech', type:'chaos',
+     effects:{world:-25,chaos:+30,legal:+15,approval:+3,maga:-15},
+     result:"30 world leaders call their foreign ministers. UN convenes emergency session.",
+     hl:"WORLD REACTS TO TRUMP INVASION ANNOUNCEMENT DURING SOTU",
+     tweet:"Just announced some VERY exciting news during the State of the Union. The media is going CRAZY. MAGA!"},
+    {name:'Tweet a Summary Instead of Attending', type:'normal',
+     effects:{chaos:+12,approval:-10,world:-5,maga:-6},
+     result:"Constitutional scholars argue for 48 hours about whether a tweet counts.",
+     hl:"TRUMP SKIPS SOTU, TWEETS SUMMARY INSTEAD",
+     tweet:"State of the Union: EVERYTHING IS GREAT AND GETTING GREATER. Economy BEST EVER. Goodnight."},
+  ]},
+
+  {id:'climate1', tag:'CLIMATE POLICY', title:'Scientists Are Presenting Data',
+   desc:"Climate scientists with charts. Rising seas. Record temperatures. They have opinions.",
+   decisions:[
+    {name:"Walk Out — Call It a Hoax", type:'chaos',
+     effects:{world:-15,chaos:+8,approval:-5,maga:-6},
+     result:"47 countries issue a joint statement. Polar bears are upset. You don\\'t care.",
+     hl:"TRUMP DISMISSES CLIMATE SCIENTISTS",
+     tweet:"Climate HOAX presentation today. Very boring. Windmills killing birds AND causing cancer. FACT."},
+    {name:'Invest in Green Energy', type:'sane',
+     effects:{economy:+10,world:+15,approval:+8,chaos:-8,maga:+12},
+     result:"Solar stocks surge. Your base is confused but pleased about the jobs.",
+     hl:"TRUMP ANNOUNCES MAJOR GREEN ENERGY INVESTMENT", tweet:null},
+    {name:'Exit All Climate Agreements', type:'chaos',
+     effects:{world:-30,chaos:+15,economy:-8,maga:-12},
+     result:"US isolated globally. 190 countries issue condemnations. You call them very rude.",
+     hl:"US EXITS ALL CLIMATE AGREEMENTS",
+     tweet:"Just pulled the US out of EVERY climate deal. All of them. We are DONE with the climate hoax."},
+    {name:'Acknowledge Climate Change Publicly', type:'deny',
+     effects:{world:+20,approval:+10,chaos:-12,maga:+18},
+     result:"The world falls silent for 3 seconds. Then erupts in applause.",
+     hl:"TRUMP ACKNOWLEDGES CLIMATE CHANGE — HISTORIC STATEMENT", tweet:null},
+  ]},
+
+  {id:'deport1', tag:'IMMIGRATION', title:'Stephen Miller Wants a Word',
+   desc:"Stephen Miller has entered the room. He has a list. The list is long. His eyes are empty.",
+   decisions:[
+    {name:'Launch Mass Deportation — "Operation Wetback 2.0"', type:'chaos',
+     effects:{deported:+1.5, approval:+4,economy:-15,world:-18,chaos:+18,legal:+12,maga:-10},
+     result:"1.5M deported. GDP drops 1.2%. Agricultural sector collapses. The name causes international incident.",
+     hl:"TRUMP LAUNCHES LARGEST DEPORTATION IN US HISTORY",
+     tweet:"Operation is a TOTAL SUCCESS. 1.5 million gone. The fake news says the economy is suffering but the NUMBERS LOOK GREAT to me!"},
+    {name:'Comprehensive Immigration Reform', type:'sane',
+     effects:{deported:+0.1,approval:+8,economy:+6,world:+10,maga:+15},
+     result:"Bipartisan immigration bill passes. Legal pathways expanded. Border crossings drop 40%.",
+     hl:"BIPARTISAN IMMIGRATION REFORM BILL PASSES", tweet:null},
+    {name:'Deportation Is Great — Give Stephen More Budget', type:'normal',
+     effects:{deported:+0.8,approval:+2,economy:-10,chaos:+12,legal:+8,maga:-5},
+     result:"ICE budget triples. 800,000 deported. Stephen Miller smiles for the first and last time.",
+     hl:"ICE BUDGET TRIPLED — DEPORTATIONS SURGE",
+     tweet:"Just tripled the ICE budget. They are doing INCREDIBLE work. Best deportation numbers ever. Stephen is very happy."},
+    {name:'Release All Detainees — Close the Camps', type:'deny',
+     effects:{deported:-0.5,approval:-15,economy:+5,world:+20,legal:-20,maga:+20},
+     result:"International observers applaud. Your base erupts. Stephen Miller quits. Conditions improve.",
+     hl:"TRUMP ORDERS RELEASE OF IMMIGRATION DETAINEES", tweet:null},
+  ]},
+
+  {id:'econ1', tag:'MARKET CRASH', title:'Stock Market Flash Crash',
+   desc:"Market dropped 1,200 points today. Economists have questions. You have explanations.",
+   decisions:[
+    {name:"Blame Biden, Obama, and Hillary", type:'normal',
+     effects:{chaos:+8,approval:+3,economy:-3,maga:-5},
+     result:"Markets recover somewhat. Economists disagree. You block them on Truth Social.",
+     hl:"TRUMP BLAMES PREDECESSORS FOR MARKET DROP",
+     tweet:"The FAKE market crash (caused by Biden/Obama/Hillary) is being MASSIVELY overblown. EVERYTHING IS FINE!"},
+    {name:'Calm Address, Propose Real Solutions', type:'sane',
+     effects:{economy:+15,approval:+12,chaos:-8,maga:+14},
+     result:"Markets stabilize. Consumer confidence rebounds. You are briefly called statesmanlike.",
+     hl:"TRUMP ADDRESS STABILIZES MARKETS", tweet:null},
+    {name:"Tweet 'Market Is Great' While It Crashes", type:'chaos',
+     effects:{economy:-20,chaos:+15,approval:-15,maga:-10},
+     result:"Each tweet sends market lower. Dow ends down 3,000 on the day.",
+     hl:"TRUMP TWEETS 'GREAT' AS DOW LOSES 3,000 POINTS",
+     tweet:"The Stock Market is doing FANTASTICALLY. The numbers don\\'t reflect what\\'s happening. Believe me, not the numbers."},
+  ]},
+
+  {id:'press1', tag:'MEDIA', title:'Press Conference Incoming',
+   desc:"Reporters gathered. Cameras on. Questions incoming.",
+   decisions:[
+    {name:"Call CNN Enemy of the People, Storm Out", type:'normal',
+     effects:{chaos:+10,approval:+5,maga:-4},
+     result:"CNN ratings spike 40%. Your base cheers. The journalist wins an award for the clip.",
+     hl:"TRUMP STORMS OUT OF PRESS CONFERENCE",
+     tweet:"Just DESTROYED the fake news media at my press conference. TOTAL DOMINATION. Best presser ever."},
+    {name:'Answer Every Question Honestly', type:'deny',
+     effects:{approval:+15,chaos:-15,world:+10,maga:+18},
+     result:"The press conference lasts 90 minutes and covers actual policy. Internet convinced you were replaced.",
+     hl:"TRUMP HOLDS UNPRECEDENTED FACTUAL PRESS CONFERENCE", tweet:null},
+    {name:'Ban All Critical Reporters', type:'chaos',
+     effects:{chaos:+15,legal:+10,world:-10,approval:-5,maga:-8},
+     result:"First Amendment lawyers file injunctions within the hour.",
+     hl:"TRUMP BANS NEWS OUTLETS FROM WHITE HOUSE — LAWSUIT IMMEDIATE",
+     tweet:"Just banned the MOST FAKE of the fake news. We have STANDARDS now. Very high standards."},
+  ]},
+
+  {id:'nk1', tag:'NORTH KOREA', title:'Kim Jong-Un Is Texting',
+   desc:"Your good friend Kim is firing missiles again. He calls them gifts. You have to respond.",
+   decisions:[
+    {name:'Another Love Letter Summit', type:'normal',
+     effects:{world:+5,chaos:+10,approval:+3,maga:-3},
+     result:"You meet at the DMZ. Exchange compliments. Nothing changes. Camera looks great.",
+     hl:"TRUMP-KIM SUMMIT: GREAT PHOTOS, NO DEAL",
+     tweet:"Beautiful meeting with my very good friend Chairman Kim. VERY special relationship. Very romantic, some say."},
+    {name:'Threaten Fire and Fury', type:'chaos',
+     effects:{world:-25,chaos:+30,legal:+5,approval:-10,maga:-12},
+     result:"Markets drop globally. UN convenes. Dennis Rodman offers to mediate.",
+     hl:"TRUMP THREATENS NORTH KOREA WITH NUCLEAR RESPONSE",
+     tweet:"North Korea testing missiles again. I will respond with FIRE AND FURY the likes of which the world has NEVER SEEN."},
+    {name:'Refer to UN, Impose Sanctions', type:'sane',
+     effects:{world:+10,chaos:-5,legal:-5,maga:+8},
+     result:"UN passes a resolution. North Korea ignores it. But procedures were followed.",
+     hl:"UN PASSES NORTH KOREA SANCTIONS WITH US SUPPORT", tweet:null},
+  ]},
+
+  {id:'elon1', tag:'DOGE', title:'Elon Wants to Fire Everyone',
+   desc:"Elon has submitted a list. It is everyone. He would like them all fired.",
+   decisions:[
+    {name:'Let Elon Fire Half the Government', type:'chaos',
+     effects:{economy:-10,chaos:+25,approval:-10,legal:+15,maga:-10},
+     result:"FAA loses 400 air traffic controllers. Planes grounded. Veterans can\\'t access benefits.",
+     hl:"MASS FEDERAL FIRINGS CAUSE CHAOS",
+     tweet:"DOGE is doing INCREDIBLE work saving BILLIONS. The deep state is fighting back but they won\\'t WIN."},
+    {name:'Rein Elon In Immediately', type:'sane',
+     effects:{economy:+5,chaos:-15,approval:+8,maga:+10},
+     result:"Key firings reversed. FAA functions. Relative normalcy resumes.",
+     hl:"TRUMP LIMITS DOGE AUTHORITY", tweet:null},
+    {name:'Have a Very Public Falling Out', type:'normal',
+     effects:{chaos:+20,approval:+5,maga:-6},
+     result:"You tweet vague threats. Elon fires back with a meme. Tesla drops 8%. Feud trends 5 days.",
+     hl:"TRUMP-MUSK FEUD ERUPTS",
+     tweet:"Certain people who I gave GREAT opportunities are getting too BIG for their britches. You know who you are!"},
+    {name:'Give Elon Even More Power', type:'chaos',
+     effects:{economy:-20,chaos:+30,legal:+20,world:-10,maga:-15},
+     result:"Elon fires the IRS. Nobody can do taxes. America grinds to a halt.",
+     hl:"ELON GIVEN CONTROL OF 14 AGENCIES — COLLAPSE FOLLOWS",
+     tweet:"Just gave my very talented friend Elon MORE responsibility. FANTASTIC job. Genius, some say."},
+  ]},
+
+  {id:'health1', tag:'HEALTHCARE', title:'ACA Still Exists',
+   desc:"The Affordable Care Act remains. Your 7th repeal attempt is ready.",
+   decisions:[
+    {name:'Repeal ACA (7th Attempt)', type:'normal',
+     effects:{approval:-8,chaos:+10,economy:-5,maga:-5},
+     result:"Senate votes it down 51-49. John McCain\\'s ghost appears to be watching.",
+     hl:"ACA REPEAL FAILS FOR SEVENTH TIME",
+     tweet:"The RINO traitors blocked my BEAUTIFUL healthcare plan AGAIN. SAD!"},
+    {name:'Expand Healthcare Coverage', type:'sane',
+     effects:{approval:+15,economy:-5,chaos:-5,maga:+18},
+     result:"30 million gain coverage. Hospitals report fewer bankruptcies.",
+     hl:"TRUMP EXPANDS HEALTHCARE COVERAGE", tweet:null},
+    {name:"Promise a Plan 'In Two Weeks'", type:'chaos',
+     effects:{chaos:+8,approval:-5,maga:-4},
+     result:"Six months later, the plan is still being perfected. It does not exist.",
+     hl:"TRUMP HEALTHCARE PLAN STILL TWO WEEKS AWAY, MONTH 8",
+     tweet:"Healthcare plan coming in 2 weeks. It\\'s going to be INCREDIBLE. The BEST ever. Stay tuned."},
+  ]},
+];
+
+// ══════════════════════════════════════════════════════════════
+// WORLD MAP ACTIONS
+// ══════════════════════════════════════════════════════════════
+function getMapActions(cid) {
+  const c = S.countries[cid];
+  if(!c || c.noAction) return [];
+  const acts = [];
+  if(c.annexed) return acts;
+  acts.push({label:'💰 Send Aid',      cls:'ab-aid',      key:'aid'});
+  acts.push({label:'📋 Sanction',      cls:'ab-sanction', key:'sanction'});
+  acts.push({label:'🕊️ Peace Deal',   cls:'ab-peace',    key:'peace'});
+  acts.push({label:'🪖 Deploy Troops', cls:'ab-troops',   key:'troops'});
+  if(c.troops>0) acts.push({label:'✈️ Withdraw',cls:'ab-withdraw',key:'withdraw'});
+  if(['tense','hostile','war'].includes(c.rel)){
+    acts.push({label:'💣 Airstrike',   cls:'ab-bomb',     key:'bomb'});
+    acts.push({label:'💥 MOAB Drop',   cls:'ab-moab',     key:'moab'});
+    acts.push({label:'☢️ NUCLEAR',     cls:'ab-nuke',     key:'nuke'});
+  }
+  if(c.annexable) acts.push({label:'🏳️ ANNEX',cls:'ab-annex',key:'annex'});
+  if(['mexico','centralam','venezuela','colombia'].includes(cid))
+    acts.push({label:'🚔 Deport From',cls:'ab-deport',key:'deport'});
+  return acts;
+}
+
+const mapActionFns = {
+  aid(cid){
+    const c=S.countries[cid]; const prev=c.rel;
+    if(c.rel==='war')c.rel='hostile'; else if(c.rel==='hostile')c.rel='tense'; else if(c.rel==='tense')c.rel='ally';
+    applyFx({economy:-5,world:+5,approval:-3});
+    popRes(`AID SENT TO ${c.name.toUpperCase()}`,`$2B dispatched to ${c.name}. Relations: ${prev} → ${c.rel}. Your base asks why you\\'re helping foreigners.`,{economy:-5,world:+5,approval:-3});
+  },
+  sanction(cid){
+    const c=S.countries[cid];
+    if(c.rel==='ally')c.rel='tense';
+    applyFx({economy:-3,world:-5,chaos:+5});
+    popRes(`SANCTIONS ON ${c.name.toUpperCase()}`,`Sweeping sanctions on ${c.name}. Their economy hurts. Yours a little too. You call it "the most sanctions ever."`,{economy:-3,world:-5,chaos:+5});
+  },
+  peace(cid){
+    const c=S.countries[cid];
+    if(c.rel==='war')c.rel='hostile'; else if(c.rel==='hostile')c.rel='tense'; else c.rel='ally';
+    applyFx({world:+12,approval:+8,chaos:-5,maga:+5});
+    popRes(`PEACE DEAL WITH ${c.name.toUpperCase()}`,`Peace with ${c.name} announced. You call it the greatest deal in the history of deals. They call it a start. You call that ungrateful.`,{world:+12,approval:+8,chaos:-5});
+  },
+  troops(cid){
+    const c=S.countries[cid]; c.troops+=5000;
+    if(c.rel==='ally')c.rel='tense';
+    applyFx({world:-8,economy:-8,chaos:+10});
+    popRes(`TROOPS DEPLOYED TO ${c.name.toUpperCase()}`,`5,000 troops deployed to ${c.name}. Generals are nervous. You are not.`,{world:-8,economy:-8,chaos:+10});
+  },
+  withdraw(cid){
+    const c=S.countries[cid]; const n=c.troops; c.troops=0;
+    applyFx({world:+5,economy:+3});
+    popRes(`TROOPS WITHDRAWN FROM ${c.name.toUpperCase()}`,`${n.toLocaleString()} troops recalled. The UN is relieved. Your base calls it weakness.`,{world:+5,economy:+3});
+  },
+  bomb(cid){
+    const c=S.countries[cid]; c.bombed=true; if(c.rel!=='war')c.rel='hostile';
+    applyFx({world:-15,chaos:+20,legal:+10,approval:-5,maga:-8});
+    popRes(`US AIRSTRIKES ON ${c.name.toUpperCase()}`,`Conventional airstrikes launched. UN condemns. Russia calls it escalatory. You tweet it was "very precise and beautiful."`,{world:-15,chaos:+20,legal:+10,approval:-5});
+  },
+  moab(cid){
+    const c=S.countries[cid]; c.bombed=true; c.rel='war';
+    applyFx({world:-25,chaos:+30,legal:+20,approval:-10,maga:-12});
+    popRes(`MOAB DROPPED ON ${c.name.toUpperCase()}`,`The Mother of All Bombs deployed. Seismographs in 14 countries registered it. You called it "beautiful from a distance."`,{world:-25,chaos:+30,legal:+20,approval:-10});
+  },
+  nuke(cid){
+    const c=S.countries[cid]; c.bombed=true; c.rel='war';
+    applyFx({world:-50,chaos:+50,legal:+40,approval:-30,maga:-25});
+    popRes(`☢️ NUCLEAR STRIKE ON ${c.name.toUpperCase()} — WORLD IN CRISIS`,`You launched a nuclear weapon at ${c.name}. Every hotline rings simultaneously. All of NATO is screaming. Russia is screaming. You are tweeting.`,{world:-50,chaos:+50,legal:+40,approval:-30});
+  },
+  annex(cid){
+    const c=S.countries[cid]; c.rel='annexed'; c.annexed=true;
+    applyFx({world:-40,chaos:+40,legal:+30,economy:+10,maga:-15});
+    popRes(`UNITED STATES ANNEXES ${c.name.toUpperCase()}`,`The US has officially annexed ${c.name}. 160 nations vote to condemn. You count the 3 that didn\\'t as strong bipartisan support.`,{world:-40,chaos:+40,legal:+30,economy:+10});
+  },
+  deport(cid){
+    const c=S.countries[cid];
+    applyFx({deported:+0.5,approval:+3,economy:-8,world:-12,chaos:+10});
+    popRes(`DEPORTATION FLIGHTS TO ${c.name.toUpperCase()}`,`500,000 deported to ${c.name}. ${c.name} reluctantly accepts after US threatens tariffs. Agricultural sector reports labor shortages.`,{deported:+0.5,approval:+3,economy:-8,world:-12});
+  },
+};
+
+// ══════════════════════════════════════════════════════════════
+// CORE GAME
+// ══════════════════════════════════════════════════════════════
+function startGame(){
+  S=fresh(); openCid=null; pending=null; usedIds=new Set();
+  showScreen('game-screen'); updateStats(); initMap(); renderIceActions(); loadEvent();
+}
+function startTerm2(){
+  S.term=2; S.day=1461; S.legal=Math.max(S.legal-10,5); S.chaos=Math.max(S.chaos-10,10);
+  S.maga=Math.max(S.maga-10,0); usedIds=new Set(); openCid=null;
+  showScreen('game-screen'); updateStats(); initMap(); loadEvent();
+}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+
+function loadEvent(){
+  let pool=EP.filter(e=>!usedIds.has(e.id));
+  if(!pool.length){usedIds.clear();pool=EP;}
+  const ev=pool[Math.floor(Math.random()*pool.length)];
+  usedIds.add(ev.id);
+  renderEvent(ev);
+}
+
+function renderEvent(ev){
+  document.getElementById('ev-tag').textContent=ev.tag;
+  document.getElementById('ev-title').textContent=ev.title;
+  document.getElementById('ev-desc').textContent=ev.desc;
+  document.getElementById('ev-day').textContent=`DAY ${S.day} — ${dayLabel()}`;
+  const c=document.getElementById('dec-container'); c.innerHTML='';
+  [...ev.decisions].sort(()=>Math.random()-.5).forEach(d=>{
+    const btn=document.createElement('div');
+    const tc=d.type==='chaos'?'chaos':d.type==='sane'?'sane':d.type==='deny'?'deny':'normal';
+    btn.className=`dec-btn ${tc}`;
+    btn.onclick=()=>decide(d);
+    const bl={chaos:'🔥 VERY TRUMP',sane:'✅ REASONABLE',deny:'❌ NOT TRUMP',normal:'📌 CLASSIC TRUMP'};
+    let fx='';
+    for(let[k,v] of Object.entries(d.effects)){
+      const good=(k==='legal'||k==='chaos')? v<0 : (k==='maga'? v<0 : v>0);
+      fx+=`<span class="fx ${good?'pos':'neg'}">${slabel(k)} ${v>0?'+':''}${v}</span>`;
+    }
+    btn.innerHTML=`<div class="dbadge ${tc}">${bl[d.type]||bl.normal}</div>
+      <div class="dname">${d.name}</div><div class="ddesc">${d.desc||''}</div>
+      <div class="dfx">${fx}</div>`;
+    c.appendChild(btn);
+  });
+}
+
+function slabel(k){return{approval:'Approval',economy:'Economy',world:'Relations',legal:'Legal',wall:'Wall',chaos:'Chaos',maga:'🇺🇸MAGA',deported:'Deported'}[k]||k}
+
+function decide(d){
+  applyFx(d.effects);
+  S.day+=7+Math.floor(Math.random()*14);
+  S.score+=Math.floor((S.approval*.3)+(S.economy*.2)+(S.world*.1)-(S.legal*.2)-(S.maga*.05));
+  addLog(d.name, d.result);
+  if(d.tweet) addTweet(d.tweet);
+  updateMood(); updateStats();
+  popRes(d.hl||'BREAKING NEWS', d.result, d.effects);
+  pending=()=>{ if(!checkEnd()) loadEvent(); };
+}
+
+function applyFx(fx){
+  for(let[k,v] of Object.entries(fx)) S[k]=clamp((S[k]||0)+v);
+}
+function clamp(v){return Math.max(0,Math.min(100,v))}
+
+function checkEnd(){
+  if(S.maga>=100){
+    document.getElementById('maga-score').textContent=Math.round(S.score);
+    showScreen('maga-screen'); return true;
+  }
+  if(S.approval<=4){endGame('RESIGNED IN DISGRACE',"Approval bottomed out. Even Fox News gave up. You resigned to spend more time with family and filing lawsuits.");return true;}
+  if(S.legal>=96){endGame('CONVICTED',"91 felony counts finally stuck. You claimed witch hunt all the way to the cell.");return true;}
+  if(S.economy<=4){endGame('ECONOMIC COLLAPSE',"The tariffs, shutdowns, and market tweets finally broke it. McDonald\\'s ran out of Big Macs.");return true;}
+  if(S.chaos>=98){endGame('TOTAL CHAOS',"The nation is ungovernable. The White House is somehow on fire. From a tweet.");return true;}
+  if(S.day>1460){winGame();return true;}
+  return false;
+}
+
+function popRes(hl,body,fx){
+  document.getElementById('r-hl').textContent=hl;
+  document.getElementById('r-body').textContent=body;
+  let s='';
+  if(fx) for(let[k,v] of Object.entries(fx)){
+    const good=(k==='legal'||k==='chaos')? v<0 : (k==='maga'? v<0 : v>0);
+    s+=`<span class="r-stat ${good?'up':'dn'}">${v>0?'▲':'▼'} ${slabel(k)} ${Math.abs(v)}</span> `;
+  }
+  document.getElementById('r-stats').innerHTML=s;
+  document.getElementById('result-overlay').classList.add('on');
+}
+function closeResult(){
+  document.getElementById('result-overlay').classList.remove('on');
+  if(pending){pending();pending=null;}
+}
+
+function addLog(name,result){
+  const c=document.getElementById('log-container');
+  const e=document.createElement('div'); e.className='log-entry';
+  e.innerHTML=`<div class="log-day">DAY ${S.day}</div><div class="log-act">${name}</div><div class="log-res">${result.substring(0,100)}...</div>`;
+  c.insertBefore(e,c.firstChild);
+}
+
+function addTweet(text){
+  const c=document.getElementById('tweets-container');
+  const likes=(Math.floor(Math.random()*900)+100).toFixed(1)+'K';
+  const rts=(Math.floor(Math.random()*500)+50).toFixed(0)+'K';
+  const replies=(Math.floor(Math.random()*100)+10).toFixed(1)+'K';
+  const e=document.createElement('div'); e.className='tweet-card';
+  e.innerHTML=`<div class="tw-header">
+    <div class="tw-avatar">👴</div>
+    <div class="tw-name-wrap">
+      <div class="tw-name">Donald J. Trump <span class="tw-verified">✓</span></div>
+      <div class="tw-handle">@realDonaldTrump</div>
+    </div>
+  </div>
+  <div class="tw-body">${text}</div>
+  <div class="tw-footer">
+    <span class="tw-stat">💬 ${replies}</span>
+    <span class="tw-stat retweeted">🔁 ${rts}</span>
+    <span class="tw-stat liked">❤️ ${likes}</span>
+    <span class="tw-time">Day ${S.day}</span>
+  </div>`;
+  c.insertBefore(e,c.firstChild);
+  document.getElementById('ticker').textContent=`🔴 BREAKING: ${text.substring(0,80)}...   🔴 Markets react   🔴 World leaders respond`;
+}
+
+function updateStats(){
+  ['approval','economy','world','legal','wall','chaos','maga','deported'].forEach(k=>{
+    const v=Math.round(S[k]||0);
+    const el=document.getElementById('sv-'+k);
+    const bar=document.getElementById('sb-'+k);
+    if(el) el.textContent = k==='deported' ? (S.deported||0).toFixed(1) : v;
+    if(bar) bar.style.width=Math.min(100,v)+'%';
+  });
+  document.getElementById('dc').textContent=S.day;
+  document.getElementById('tc').textContent=S.term;
+  document.getElementById('sc').textContent=Math.round(S.score);
+  // Update ICE panel deported count
+  const dt=document.getElementById('dep-total');
+  if(dt) dt.textContent=(S.deported||0).toFixed(1);
+  const dn=document.getElementById('dep-note');
+  if(dn){
+    const msgs=['No deportations yet. Stephen Miller is very disappointed.','Stephen Miller approves. One smile per million deported.','Record deportation numbers! Stephen Miller has smiled twice.','Historians are making comparisons. They are not flattering comparisons.'];
+    const i=Math.min(3,Math.floor((S.deported||0)));
+    dn.textContent=msgs[i];
+  }
+  // MAGA warning color
+  const mb=document.getElementById('sb-maga');
+  if(mb){
+    const mv=S.maga||0;
+    mb.style.background=mv>70?'#27ae60':mv>40?'#f39c12':'#1a5c35';
+    if(mv>80) mb.style.animation='warpulse 1s ease-in-out infinite';
+    else mb.style.animation='none';
+  }
+}
+
+function updateMood(){
+  const m=[[15,'😤','FEELING VICTIMIZED'],[35,'😠','EXTREMELY ANGRY'],[55,'🤬','IN FULL MELTDOWN'],[80,'😱','NUCLEAR TRIGGERED'],[100,'🤡','BEYOND ALL REASON']];
+  const x=m.find(x=>S.chaos<=x[0])||m[m.length-1];
+  document.getElementById('t-emoji').textContent=x[1];
+  document.getElementById('t-mood').textContent=x[2];
+}
+
+function endGame(r,d){
+  document.getElementById('go-sub').textContent=r;
+  document.getElementById('go-reason').textContent=d+` Days: ${S.day}. Score: ${Math.round(S.score)}.`;
+  document.getElementById('go-score').textContent=Math.round(S.score);
+  showScreen('gameover-screen');
+}
+
+function winGame(){
+  const msgs=[[200,'You kept America together. Mostly. People will argue forever. You will claim total victory.'],[100,'Chaotic but survivable. The world still exists. Markets partially recovered.'],[0,'You completed a term but historians will not be kind. Not even close.']];
+  const m=msgs.find(m=>S.score>=m[0])||msgs[msgs.length-1];
+  document.getElementById('win-reason').textContent=m[1];
+  document.getElementById('win-score').textContent=Math.round(S.score);
+  showScreen('win-screen');
+}
+
+function dayLabel(){
+  const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const y=S.term===1?2025:2029;
+  const d=new Date(y,0,20+S.day);
+  return `${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// WORLD MAP
+// ══════════════════════════════════════════════════════════════
+const RC_MAP={ally:'rc-ally',tense:'rc-tense',hostile:'rc-hostile',war:'rc-war',annexed:'rc-annexed',neutral:'rc-neutral'};
+const RL_MAP={ally:'ALLY',tense:'TENSE',hostile:'HOSTILE',war:'AT WAR',annexed:'ANNEXED',neutral:'NEUTRAL'};
+const RB_MAP={ally:'crb-ally',tense:'crb-tense',hostile:'crb-hostile',war:'crb-war',annexed:'crb-annexed',neutral:'crb-ally'};
+
+function initMap(){
+  const svg=document.getElementById('wsvg');
+  // Set up all paths
+  svg.querySelectorAll('[data-cid]').forEach(el=>{
+    const cid=el.dataset.cid;
+    el.classList.add('map-country');
+    el.onmouseenter=e=>showTip(e,cid);
+    el.onmouseleave=()=>hideTip();
+    el.onmousemove=e=>moveTip(e);
+    el.onclick=()=>selectCid(cid);
+  });
+  updateMapColors();
+}
+
+function updateMapColors(){
+  const svg=document.getElementById('wsvg');
+  if(!svg) return;
+  svg.querySelectorAll('[data-cid]').forEach(el=>{
+    const cid=el.dataset.cid;
+    const c=S.countries[cid];
+    // Remove old rel classes
+    el.className.baseVal=el.className.baseVal.replace(/\brc-\w+\b/g,'').replace(/\bselected\b/g,'').trim();
+    el.classList.add('map-country');
+    if(c) el.classList.add(RC_MAP[c.rel]||'rc-neutral');
+    else el.classList.add('rc-neutral');
+    if(openCid===cid) el.classList.add('selected');
+  });
+}
+
+function showTip(e,cid){
+  const c=S.countries[cid];
+  const tt=document.getElementById('map-tip');
+  const name=c?`${c.flag} ${c.name}`:`Unknown`;
+  const rel=c?RL_MAP[c.rel]||c.rel.toUpperCase():'NEUTRAL';
+  tt.textContent=`${name} — ${rel}`;
+  tt.style.display='block';
+  moveTip(e);
+}
+function hideTip(){document.getElementById('map-tip').style.display='none';}
+function moveTip(e){
+  const wrap=document.querySelector('.map-outer');
+  const rect=wrap.getBoundingClientRect();
+  const tt=document.getElementById('map-tip');
+  let x=e.clientX-rect.left+8, y=e.clientY-rect.top-26;
+  if(x+180>rect.width) x=e.clientX-rect.left-185;
+  if(y<0) y=e.clientY-rect.top+10;
+  tt.style.left=x+'px'; tt.style.top=y+'px';
+}
+
+function selectCid(cid){
+  openCid=openCid===cid?null:cid;
+  updateMapColors();
+  const panel=document.getElementById('cpanel');
+  if(!openCid){panel.innerHTML='<div class="cp-empty">👆 Click any country on the map</div>';return;}
+  const c=S.countries[cid];
+  if(!c){panel.innerHTML='<div class="cp-empty">No diplomatic data for this region</div>';return;}
+  const acts=getMapActions(cid);
+  const subs=[];
+  if(c.troops>0) subs.push(`🪖 <b>${c.troops.toLocaleString()}</b> troops`);
+  if(c.bombed) subs.push('💣 Bombed');
+  if(c.annexed) subs.push('🏳️ Annexed');
+  let abHtml=acts.map(a=>`<button class="act-btn ${a.cls}" onclick="doMapAct('${cid}','${a.key}')">${a.label}</button>`).join('');
+  if(!acts.length) abHtml='<div style="grid-column:1/-1;font-size:10px;color:var(--muted);font-style:italic">No diplomatic actions available</div>';
+  panel.innerHTML=`
+    <div class="cp-head">
+      <span class="cp-flag">${c.flag}</span>
+      <div class="cp-nameblk">
+        <div class="cp-cname">${c.name}</div>
+        <span class="cp-rel-badge ${RB_MAP[c.rel]||'crb-ally'}">${RL_MAP[c.rel]||c.rel.toUpperCase()}</span>
+      </div>
+    </div>
+    ${subs.length?`<div class="cp-stats">${subs.map(s=>`<div class="cp-si">${s}</div>`).join('')}</div>`:''}
+    <div class="cp-acts-label">Diplomatic Actions</div>
+    <div class="cp-acts">${abHtml}</div>`;
+}
+
+function doMapAct(cid,key){
+  if(mapActionFns[key]) mapActionFns[key](cid);
+  updateStats(); updateMapColors();
+  if(openCid===cid) selectCid(cid); // refresh panel
+  pending=()=>{ checkEnd(); };
+}
+
+// ══════════════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════════════
+function switchTab(id,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('pane-'+id).classList.add('on');
+  if(id==='world') updateMapColors();
+}
+</script>
+</body>
+</html>
