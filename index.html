@@ -49,7 +49,11 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
 /* ══ LAYOUT ══ */
 .layout{display:grid;grid-template-columns:1fr 360px;flex:1;overflow:hidden;min-height:0}
 @media(max-width:800px){.layout{grid-template-columns:1fr}}
-.left{display:flex;flex-direction:column;padding:14px;gap:14px;overflow-y:auto;max-height:calc(100vh - 130px)}
+.left{display:flex;flex-direction:column;padding:14px;gap:14px;overflow:hidden;max-height:calc(100vh - 130px)}
+.dec-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.dec-scroll{overflow-y:auto;flex:1;min-height:0;padding-right:4px}
+.dec-scroll::-webkit-scrollbar{width:4px}
+.dec-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 .right{background:var(--panel);border-left:2px solid var(--border);display:flex;flex-direction:column;overflow:hidden;max-height:calc(100vh - 130px)}
 
 /* ══ SITUATION ══ */
@@ -138,25 +142,61 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
 
 /* ══ WORLD MAP ══ */
 #pane-world{padding:0;overflow:hidden;flex-direction:column}
-.map-outer{background:#071520;flex-shrink:0;position:relative;border-bottom:2px solid var(--border)}
+.map-outer{background:#071520;flex-shrink:0;position:relative;border-bottom:2px solid var(--border);overflow:hidden}
 .map-outer svg{width:100%;display:block}
-.map-country{stroke:#0d2030;stroke-width:0.4;cursor:pointer;transition:filter .12s}
-.map-country:hover{filter:brightness(1.5);stroke:#fff;stroke-width:.8}
-.map-country.selected{stroke:var(--gold)!important;stroke-width:1.5!important;filter:brightness(1.6)!important}
-/* Relation colors */
-.rc-ally{fill:#1a5c35}
-.rc-tense{fill:#7a4a08}
-.rc-hostile{fill:#6e1018}
+.map-country{stroke:#0d2030;stroke-width:0.5;cursor:pointer;transition:filter .12s,fill .3s}
+.map-country:hover{filter:brightness(1.6);stroke:#c8d8e8;stroke-width:.9}
+.map-country.selected{stroke:var(--gold)!important;stroke-width:1.8!important;filter:brightness(1.7)!important}
+.rc-ally{fill:#1a5c35}.rc-tense{fill:#7a4a08}.rc-hostile{fill:#6e1018}
 .rc-war{fill:#c8102e;animation:warpulse 1s ease-in-out infinite}
-.rc-annexed{fill:#7a6800}
-.rc-neutral{fill:#162535}
-@keyframes warpulse{0%,100%{fill:#c8102e}50%{fill:#ff3333}}
+.rc-annexed{fill:#b8001e;animation:annexpulse 2s ease-in-out infinite}.rc-neutral{fill:#162535}
+.rc-usa{fill:#002868!important}
+@keyframes annexpulse{0%,100%{fill:#b8001e}50%{fill:#e0001e}}
+/* ══ LOADING SCREEN ══ */
+#loading-screen{background:var(--dark);align-items:center;justify-content:center;text-align:center;flex-direction:column;gap:18px}
+.load-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,10vw,96px);color:var(--gold);text-shadow:4px 4px 0 var(--red);letter-spacing:4px;animation:loadpulse 1.4s ease-in-out infinite}
+@keyframes loadpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.65;transform:scale(.97)}}
+.load-msg{font-family:'Special Elite',serif;font-size:15px;color:var(--text);letter-spacing:2px;min-height:22px;opacity:.85}
+.load-bar-outer{width:300px;height:7px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;border:1px solid rgba(255,215,0,.18)}
+.load-bar-inner{height:100%;background:linear-gradient(90deg,var(--red),var(--gold),var(--red));background-size:200% 100%;animation:loadshine 1.2s linear infinite;border-radius:4px;width:0%;transition:width .15s ease}
+@keyframes loadshine{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.load-flag-row{display:flex;border:2px solid rgba(255,215,0,.25);border-radius:2px;overflow:hidden}
+.load-flag-row .fs{height:16px;width:14px}
+@keyframes warpulse{0%,100%{fill:#c8102e}50%{fill:#ff4444}}
+/* Animation overlay */
+#anim-layer{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
+.anim-proj{position:absolute;font-size:14px;pointer-events:none;z-index:15;transform:translate(-50%,-50%);
+  transition:none;filter:drop-shadow(0 0 4px rgba(255,200,0,.8))}
+.anim-flash{position:absolute;border-radius:50%;pointer-events:none;z-index:14;
+  transform:translate(-50%,-50%);animation:flashexp .6s ease-out forwards}
+@keyframes flashexp{0%{width:4px;height:4px;opacity:1;background:radial-gradient(circle,#fff,#ff8800)}
+  60%{width:28px;height:28px;opacity:.8}100%{width:40px;height:40px;opacity:0}}
+.anim-troops{position:absolute;font-size:11px;pointer-events:none;z-index:15;
+  transform:translate(-50%,-50%);animation:troopMarch 1.5s ease-in-out forwards}
+@keyframes troopMarch{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  80%{opacity:1;transform:translate(-50%,-50%) scale(1.3)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(0.5)}}
 .map-tip{position:absolute;background:rgba(5,10,20,.95);border:1px solid var(--gold);padding:3px 10px;
   font-size:10px;letter-spacing:1px;pointer-events:none;display:none;z-index:20;
   font-family:'Bebas Neue',sans-serif;color:var(--gold);border-radius:2px;white-space:nowrap}
 .map-legend{display:flex;flex-wrap:wrap;gap:4px;padding:4px 8px;background:rgba(0,0,0,.4);flex-shrink:0;border-bottom:1px solid var(--border)}
 .ml{display:flex;align-items:center;gap:3px;font-size:8px;letter-spacing:.5px;color:var(--muted)}
 .ml-dot{width:8px;height:8px;border-radius:1px;flex-shrink:0}
+/* War status panel */
+.war-panel{background:rgba(200,16,46,.08);border:1px solid rgba(200,16,46,.3);border-radius:4px;
+  margin:8px 10px;padding:8px 10px;font-size:10px}
+.war-panel-title{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--red);letter-spacing:1px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.war-bar-wrap{display:flex;align-items:center;gap:6px;margin:4px 0}
+.war-bar-bg{flex:1;height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden}
+.war-bar-us{height:100%;background:linear-gradient(90deg,#002868,#1d9bf0);border-radius:4px;transition:width .5s}
+.war-bar-them{height:100%;background:linear-gradient(90deg,#c8102e,#ff4444);border-radius:4px;float:right;transition:width .5s}
+.war-outcome{font-size:9px;color:var(--muted);margin-top:4px;font-style:italic}
+.war-btn-row{display:flex;gap:5px;margin-top:7px}
+.war-btn{font-size:9px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;padding:4px 10px;
+  border:1px solid;border-radius:2px;cursor:pointer;background:transparent}
+.war-btn.escalate{color:#ff6666;border-color:rgba(200,16,46,.5)}
+.war-btn.peace{color:#5dade2;border-color:rgba(93,173,226,.4)}
+.war-btn.annex-now{color:var(--gold);border-color:var(--gold);background:rgba(255,215,0,.1)}
 /* Country panel */
 .cpanel{flex:1;overflow-y:auto;background:var(--panel2)}
 .cp-empty{padding:14px;text-align:center;color:var(--muted);font-size:10px;font-style:italic;margin-top:6px}
@@ -233,14 +273,84 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
 </head>
 <body>
 
+<!-- ══ LOADING ══ -->
+<div id="loading-screen" class="screen active">
+  <div class="load-flag-row"><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div></div>
+  <div class="load-title">THE DONALD</div>
+  <div class="load-msg" id="load-msg">Assembling the cabinet...</div>
+  <div class="load-bar-outer"><div class="load-bar-inner" id="load-bar"></div></div>
+  <div style="font-size:11px;color:var(--muted);font-family:'Special Elite',serif;font-style:italic;margin-top:6px" id="load-sub"></div>
+</div>
+
 <!-- ══ TITLE ══ -->
-<div id="title-screen" class="screen active">
+<div id="title-screen" class="screen">
   <div class="flag-row"><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div></div>
   <div class="t-main">THE DONALD</div>
   <div class="t-sub">A Presidential Simulator</div>
   <div class="t-tag">"Many people are saying this is the greatest game ever made. Nobody knows games better than me." — Probably</div>
   <button class="btn-play" onclick="startGame()">▶ MAKE AMERICA PLAY AGAIN</button>
+  <button class="btn-play" style="background:transparent;border-color:var(--gold);color:var(--gold);font-size:18px;padding:10px 36px;margin-top:10px;letter-spacing:3px" onclick="showScreen('tutorial-screen')">📖 HOW TO PLAY</button>
   <div class="t-warn">⚠️ Political satire. Mocks real controversies for comedic effect. Made for people who lean left. Warning: if you accidentally Make America Great Again, you lose.</div>
+</div>
+
+<!-- ══ TUTORIAL ══ -->
+<div id="tutorial-screen" class="screen" style="background:radial-gradient(ellipse at center,#0d0a1a 0%,var(--dark) 70%);align-items:center;justify-content:center;padding:24px;overflow-y:auto">
+  <div style="max-width:620px;width:100%">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,7vw,68px);color:var(--gold);text-align:center;text-shadow:3px 3px 0 var(--red);margin-bottom:4px">HOW TO PLAY</div>
+    <div style="font-family:'Special Elite',serif;font-size:12px;color:var(--muted);text-align:center;letter-spacing:2px;margin-bottom:20px">THE DONALD: A PRESIDENTIAL SIMULATOR</div>
+
+    <div style="display:grid;gap:12px">
+
+      <div style="background:rgba(200,16,46,.1);border:1px solid rgba(200,16,46,.4);border-radius:6px;padding:14px 16px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);letter-spacing:1px;margin-bottom:6px">🎯 THE GOAL</div>
+        <div style="font-family:'Special Elite',serif;font-size:13px;color:var(--text);line-height:1.7">You are Donald Trump. You have <b style="color:var(--gold)">two ways to win</b>: survive all <b style="color:var(--gold)">4 terms</b> (you'll find out how it ends), OR achieve <b style="color:var(--gold)">total world domination</b> by annexing every country on the map. There is <b style="color:var(--red)">one way to lose</b>: accidentally Make America Great Again — if your MAGA% hits 100, you lose.</div>
+      </div>
+
+      <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.25);border-radius:6px;padding:14px 16px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);letter-spacing:1px;margin-bottom:8px">📊 YOUR STATS</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-family:'Special Elite',serif;font-size:11px;color:var(--text);line-height:1.6">
+          <div><b style="color:#e74c3c">Approval</b> — How much America likes you. Mostly irrelevant.</div>
+          <div><b style="color:#27ae60">Economy</b> — How the markets are doing. You will ruin this.</div>
+          <div><b style="color:#2980b9">World Relations</b> — How much the world hates you.</div>
+          <div><b style="color:#8e44ad">Legal Trouble</b> — Indictments piling up. Ignore them.</div>
+          <div><b style="color:#e67e22">Chaos</b> — Higher = more unhinged. Keep it moderate.</div>
+          <div><b style="color:#ff6666">🇺🇸 MAGA%</b> — <b>YOUR DEATH METER.</b> Do NOT let this hit 100.</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(41,128,185,.08);border:1px solid rgba(41,128,185,.3);border-radius:6px;padding:14px 16px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#5dade2;letter-spacing:1px;margin-bottom:8px">📋 MAKING DECISIONS</div>
+        <div style="font-family:'Special Elite',serif;font-size:12px;color:var(--text);line-height:1.7;margin-bottom:8px">Each turn you get a situation and up to 4 choices. Your decision history scrolls — you can see everything you've done. Choices are color-coded:</div>
+        <div style="display:grid;gap:5px;font-size:11px;font-family:'Special Elite',serif">
+          <div style="background:rgba(200,16,46,.18);border-left:3px solid var(--red);padding:4px 8px">🔥 <b style="color:#ff7777">VERY TRUMP</b> — Maximum chaos. High risk, raises Legal and Chaos. Lowers MAGA (good!)</div>
+          <div style="background:rgba(255,215,0,.1);border-left:3px solid var(--gold);padding:4px 8px">📌 <b style="color:var(--gold)">CLASSIC TRUMP</b> — Standard controversial moves. Balanced chaos.</div>
+          <div style="background:rgba(39,174,96,.12);border-left:3px solid #27ae60;padding:4px 8px">✅ <b style="color:#2ecc71">REASONABLE</b> — Actually good policy. <b>DANGER:</b> raises MAGA significantly.</div>
+          <div style="background:rgba(142,68,173,.12);border-left:3px solid #8e44ad;padding:4px 8px">❌ <b style="color:#c39bd3">NOT TRUMP</b> — Things he'd never do. Often raises MAGA the most.</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(139,114,0,.1);border:1px solid rgba(139,114,0,.35);border-radius:6px;padding:14px 16px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:#f0c030;letter-spacing:1px;margin-bottom:8px">🌍 WORLD DOMINATION PATH</div>
+        <div style="font-family:'Special Elite',serif;font-size:12px;color:var(--text);line-height:1.7">Click any country on the <b style="color:#f0c030">World Map</b> tab to open diplomacy options. To annex a country: <b>1)</b> Sanction or Deploy Troops to worsen relations → <b>2)</b> Escalate to Hostile → <b>3)</b> Airstrike or MOAB to start War → <b>4)</b> Build military strength with more troops → <b>5)</b> When the war bar shows you're winning, the <b style="color:var(--gold)">ANNEX NOW</b> button appears. Annex every country to win. The war panel shows live battle odds and quick-action buttons.</div>
+      </div>
+
+      <div style="background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:6px;padding:14px 16px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--text);letter-spacing:1px;margin-bottom:8px">🗳️ ELECTIONS & TERMS</div>
+        <div style="font-family:'Special Elite',serif;font-size:12px;color:var(--text);line-height:1.7">Around Day 730 of each term, an election interrupts gameplay. Pick 3 campaign promises — the more unhinged the better. Low chaos = lose the election (and the game). After Term 2, you must find a way to bypass the 22nd Amendment. After Term 3, bypass it again. Survive all 4 terms and the ending is considered a "win". Every restart randomizes world relations.</div>
+      </div>
+
+      <div style="background:rgba(230,126,34,.08);border:1px solid rgba(230,126,34,.3);border-radius:6px;padding:12px 16px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--orange);letter-spacing:1px;margin-bottom:6px">🚔 ICE TAB &nbsp;&nbsp; 🐦 TWEETS TAB &nbsp;&nbsp; 📰 LOG TAB</div>
+        <div style="font-family:'Special Elite',serif;font-size:12px;color:var(--text);line-height:1.6">The <b style="color:var(--orange)">ICE tab</b> lets you run deportation operations anytime — great for raising Chaos fast. The <b style="color:#1da1f2">Tweets tab</b> tracks everything you've tweeted. The <b style="color:var(--muted)">Log tab</b> is your full decision history.</div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center;margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn-play" onclick="startGame()" style="font-size:22px;padding:14px 48px">▶ PLAY NOW</button>
+      <button class="btn-play" onclick="showScreen('title-screen')" style="background:transparent;border-color:var(--muted);color:var(--muted);font-size:16px;padding:14px 28px">← BACK</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ GAME ══ -->
@@ -269,9 +379,11 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
         <div class="sit-title" id="ev-title">Welcome to the White House</div>
         <div class="sit-desc" id="ev-desc">You have been inaugurated. Again. The world watches. Your base cheers. Time to govern — your way.</div>
       </div>
-      <div>
+      <div class="dec-wrap">
         <div class="dec-title">📋 WHAT DO YOU DO?</div>
-        <div class="dec-grid" id="dec-container"></div>
+        <div class="dec-scroll" id="dec-scroll">
+          <div class="dec-grid" id="dec-container"></div>
+        </div>
       </div>
     </div>
     <!-- RIGHT -->
@@ -297,104 +409,157 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
         <!-- WORLD MAP -->
         <div class="pane" id="pane-world">
           <div class="map-outer">
-            <svg id="wsvg" viewBox="0 0 560 280" xmlns="http://www.w3.org/2000/svg">
-              <rect width="560" height="280" fill="#071520"/>
-              <!-- NORTH AMERICA -->
-              <!-- USA (contiguous) -->
-              <path data-cid="usa" d="M58,105 L62,98 L75,93 L105,88 L130,87 L148,90 L155,98 L152,110 L148,118 L138,124 L120,128 L98,130 L78,128 L62,122 L56,114 Z"/>
-              <!-- Alaska -->
-              <path data-cid="usa" d="M20,78 L35,72 L48,75 L52,84 L44,90 L30,88 L20,83 Z"/>
-              <!-- Canada -->
-              <path data-cid="canada" d="M58,55 L62,42 L90,32 L130,28 L162,30 L175,40 L170,55 L155,65 L148,78 L148,90 L130,87 L105,88 L75,93 L62,98 L55,88 L54,72 Z"/>
-              <!-- Mexico -->
-              <path data-cid="mexico" d="M62,128 L98,130 L112,133 L118,142 L112,152 L100,158 L82,155 L68,148 L60,140 L58,132 Z"/>
-              <!-- Guatemala/Honduras area -->
-              <path data-cid="centralam" d="M100,158 L112,155 L118,162 L115,170 L105,172 L96,168 L96,162 Z"/>
-              <!-- Cuba -->
-              <path data-cid="cuba" d="M118,138 L135,136 L140,141 L132,146 L118,145 Z"/>
-              <!-- Venezuela -->
-              <path data-cid="venezuela" d="M138,172 L158,168 L168,174 L165,185 L150,188 L135,183 L133,175 Z"/>
-              <!-- Colombia -->
-              <path data-cid="colombia" d="M110,168 L130,165 L138,172 L133,183 L120,185 L108,180 L105,172 Z"/>
-              <!-- Brazil -->
-              <path data-cid="brazil" d="M138,185 L170,178 L195,182 L205,200 L200,218 L182,228 L160,225 L142,215 L130,200 L128,188 Z"/>
-              <!-- Argentina/Chile -->
-              <path data-cid="argentina" d="M148,225 L168,222 L178,232 L170,248 L155,252 L142,244 L140,232 Z"/>
-              <!-- EUROPE -->
-              <!-- UK -->
-              <path data-cid="uk" d="M218,62 L225,58 L230,64 L228,74 L220,76 L215,70 Z"/>
-              <!-- Ireland -->
-              <path data-cid="ireland" d="M210,66 L216,63 L218,70 L213,73 L208,70 Z"/>
-              <!-- France -->
-              <path data-cid="france" d="M224,76 L240,73 L248,80 L245,92 L232,95 L222,88 Z"/>
-              <!-- Spain/Portugal -->
-              <path data-cid="spain" d="M215,90 L235,88 L245,92 L242,105 L225,108 L213,102 L210,94 Z"/>
-              <!-- Germany -->
-              <path data-cid="germany" d="M240,66 L256,63 L262,72 L258,84 L246,86 L238,78 Z"/>
-              <!-- Italy -->
-              <path data-cid="italy" d="M244,88 L258,84 L264,92 L260,106 L252,112 L242,105 L240,95 Z"/>
-              <!-- Poland -->
-              <path data-cid="poland" d="M256,63 L272,60 L278,70 L274,80 L260,82 L254,73 Z"/>
-              <!-- Ukraine -->
-              <path data-cid="ukraine" d="M272,68 L298,64 L308,72 L304,84 L285,88 L272,82 Z"/>
-              <!-- Scandinavia -->
-              <path data-cid="scandinavia" d="M240,40 L262,32 L278,36 L280,52 L265,60 L248,58 L238,50 Z"/>
-              <!-- RUSSIA (huge) -->
-              <path data-cid="russia" d="M280,28 L380,20 L420,28 L428,45 L415,62 L390,68 L355,72 L320,70 L298,64 L280,52 Z"/>
-              <!-- MIDDLE EAST -->
-              <!-- Turkey -->
-              <path data-cid="turkey" d="M272,88 L308,84 L320,90 L318,102 L298,106 L278,102 L268,96 Z"/>
-              <!-- Syria/Iraq -->
-              <path data-cid="iraq" d="M300,102 L325,98 L335,108 L330,120 L312,124 L298,118 L296,108 Z"/>
-              <!-- Saudi Arabia -->
-              <path data-cid="saudi" d="M295,118 L330,114 L342,124 L338,142 L318,148 L298,142 L290,130 Z"/>
-              <!-- Iran -->
-              <path data-cid="iran" d="M325,96 L360,90 L375,100 L372,116 L350,122 L330,118 L322,108 Z"/>
-              <!-- AFRICA -->
-              <!-- Morocco/Algeria -->
-              <path data-cid="northafrica" d="M220,108 L264,105 L270,118 L265,132 L240,135 L218,128 L214,116 Z"/>
-              <!-- Libya/Egypt -->
-              <path data-cid="egypt" d="M264,108 L305,105 L312,116 L308,130 L275,135 L264,125 Z"/>
-              <!-- Sudan/Ethiopia area -->
-              <path data-cid="ethiopia" d="M305,128 L340,124 L350,138 L344,155 L318,158 L302,148 L298,135 Z"/>
-              <!-- West Africa -->
-              <path data-cid="nigeria" d="M240,138 L268,134 L275,145 L268,162 L248,165 L232,158 L228,145 Z"/>
-              <!-- Congo/Central Africa -->
-              <path data-cid="drc" d="M268,155 L305,150 L318,162 L312,180 L290,184 L268,178 L260,165 Z"/>
-              <!-- South Africa -->
-              <path data-cid="southafrica" d="M270,195 L305,188 L320,198 L315,215 L295,222 L272,218 L262,205 Z"/>
-              <!-- ASIA -->
-              <!-- Kazakhstan -->
-              <path data-cid="kazakhstan" d="M355,68 L405,62 L418,75 L415,92 L390,98 L358,94 L348,80 Z"/>
-              <!-- Afghanistan/Pakistan -->
-              <path data-cid="pakistan" d="M370,98 L405,92 L418,102 L415,118 L395,124 L372,118 L365,106 Z"/>
-              <!-- India -->
-              <path data-cid="india" d="M390,118 L420,112 L432,125 L428,148 L412,158 L392,152 L382,138 L384,124 Z"/>
-              <!-- China (large) -->
-              <path data-cid="china" d="M415,62 L468,55 L488,68 L485,92 L462,105 L432,108 L415,96 L410,78 Z"/>
-              <!-- North Korea -->
-              <path data-cid="northkorea" d="M472,72 L485,68 L492,76 L487,86 L474,88 L466,80 Z"/>
-              <!-- South Korea -->
-              <path data-cid="southkorea" d="M474,88 L487,85 L492,93 L484,100 L472,98 Z"/>
-              <!-- Japan -->
-              <path data-cid="japan" d="M492,70 L502,65 L510,72 L506,85 L495,86 L489,78 Z"/>
-              <!-- Vietnam/SE Asia -->
-              <path data-cid="seasia" d="M452,108 L472,105 L480,116 L475,132 L458,135 L445,125 L444,114 Z"/>
-              <!-- Indonesia -->
-              <path data-cid="indonesia" d="M455,148 L490,142 L505,150 L500,162 L470,165 L450,158 L448,150 Z"/>
-              <!-- Australia -->
-              <path data-cid="australia" d="M460,185 L510,178 L528,192 L522,218 L495,228 L462,222 L448,205 Z"/>
-              <!-- New Zealand -->
-              <path data-cid="newzealand" d="M520,212 L530,208 L536,218 L528,228 L518,225 Z"/>
+            <svg id="wsvg" viewBox="0 0 560 290" xmlns="http://www.w3.org/2000/svg">
+              <rect width="560" height="290" fill="#071520"/>
+              <!-- OCEANS subtle grid -->
+              <path d="M0,0 L560,0 L560,290 L0,290Z" fill="#071520"/>
+
+              <!-- ══ NORTH AMERICA ══ -->
               <!-- Greenland -->
-              <path data-cid="greenland" d="M162,18 L198,12 L215,24 L210,42 L192,50 L168,48 L155,36 Z"/>
-              <!-- Denmark (tiny) -->
-              <path data-cid="denmark" d="M243,54 L252,51 L256,58 L250,63 L242,60 Z"/>
-              <!-- Panama -->
-              <path data-cid="panama" d="M112,158 L120,155 L126,161 L120,167 L110,165 Z"/>
+              <path data-cid="greenland" d="M155,12 L170,8 L190,6 L208,8 L220,15 L222,25 L218,38 L210,46 L196,50 L180,50 L165,45 L155,35 L150,24Z"/>
               <!-- Iceland -->
-              <path data-cid="iceland" d="M192,38 L208,34 L215,42 L208,50 L194,48 Z"/>
+              <path data-cid="iceland" d="M185,40 L198,36 L210,40 L208,50 L195,53 L183,50Z"/>
+              <!-- Canada -->
+              <path data-cid="canada" d="M52,52 L60,40 L72,32 L92,26 L120,22 L148,22 L165,28 L172,38 L168,50 L158,60 L150,72 L148,85 L138,88 L125,86 L108,88 L90,88 L75,92 L62,96 L55,88 L50,76 L50,62Z"/>
+              <!-- Alaska (part of USA) -->
+              <path data-cid="usa" d="M14,68 L28,62 L42,64 L50,72 L48,82 L38,88 L24,86 L14,78Z"/>
+              <!-- USA contiguous -->
+              <path data-cid="usa" d="M55,92 L75,92 L108,88 L125,86 L138,88 L148,92 L155,100 L152,112 L146,120 L135,126 L115,130 L95,130 L74,128 L60,122 L54,114 L52,102Z"/>
+              <!-- Florida peninsula extra -->
+              <path data-cid="usa" d="M118,128 L130,130 L132,140 L125,148 L116,145 L115,135Z"/>
+              <!-- Mexico -->
+              <path data-cid="mexico" d="M60,122 L95,128 L115,130 L124,135 L128,145 L122,158 L108,164 L92,162 L76,155 L64,148 L56,138 L56,128Z"/>
+              <!-- Guatemala/Central America -->
+              <path data-cid="centralam" d="M108,164 L122,158 L130,162 L128,172 L118,178 L105,178 L98,172 L100,166Z"/>
+              <!-- Cuba -->
+              <path data-cid="cuba" d="M120,144 L138,140 L148,144 L144,150 L128,153 L118,150Z"/>
+              <!-- Colombia -->
+              <path data-cid="colombia" d="M108,178 L125,175 L138,178 L142,188 L135,196 L118,198 L106,192 L102,182Z"/>
+              <!-- Venezuela -->
+              <path data-cid="venezuela" d="M138,178 L158,172 L172,176 L175,186 L165,195 L148,196 L136,190 L132,180Z"/>
+              <!-- Brazil -->
+              <path data-cid="brazil" d="M118,198 L138,195 L165,190 L198,186 L215,196 L218,215 L210,230 L195,238 L172,240 L150,236 L132,225 L118,210 L112,200Z"/>
+              <!-- Peru/Ecuador -->
+              <path data-cid="peru" d="M98,192 L118,195 L120,212 L115,228 L100,232 L88,222 L85,205 L92,196Z"/>
+              <!-- Argentina/Chile -->
+              <path data-cid="argentina" d="M132,228 L152,235 L158,248 L152,264 L138,270 L124,260 L118,244 L122,232Z"/>
+
+              <!-- ══ EUROPE ══ -->
+              <!-- Iceland -->
+              <!-- UK + Ireland -->
+              <path data-cid="uk" d="M215,62 L225,57 L232,62 L230,72 L222,76 L215,72Z"/>
+              <path data-cid="ireland" d="M207,65 L215,62 L216,70 L210,74 L206,70Z"/>
+              <!-- Norway/Sweden/Finland (Scandinavia) -->
+              <path data-cid="scandinavia" d="M235,35 L255,26 L272,28 L285,35 L284,50 L272,60 L255,63 L240,58 L232,48Z"/>
+              <!-- Denmark -->
+              <path data-cid="denmark" d="M244,58 L252,55 L258,60 L254,67 L244,66Z"/>
+              <!-- France -->
+              <path data-cid="france" d="M222,76 L240,72 L250,77 L250,88 L242,95 L228,96 L220,88Z"/>
+              <!-- Spain/Portugal -->
+              <path data-cid="spain" d="M210,95 L232,92 L248,90 L246,108 L228,114 L210,110 L205,100Z"/>
+              <!-- Germany -->
+              <path data-cid="germany" d="M242,62 L260,58 L268,65 L265,76 L250,80 L240,76Z"/>
+              <!-- Poland -->
+              <path data-cid="poland" d="M260,58 L278,55 L285,62 L282,73 L265,76 L256,68Z"/>
+              <!-- Italy -->
+              <path data-cid="italy" d="M244,80 L262,76 L270,82 L268,96 L260,108 L250,112 L244,100 L240,88Z"/>
+              <!-- Ukraine -->
+              <path data-cid="ukraine" d="M278,60 L308,56 L320,63 L318,75 L300,80 L282,78Z"/>
+              <!-- Romania/Balkans -->
+              <path data-cid="balkans" d="M262,76 L285,72 L295,78 L292,90 L275,95 L260,90 L256,80Z"/>
+              <!-- Belarus/Baltics -->
+              <path data-cid="baltics" d="M270,50 L295,44 L308,50 L308,60 L290,64 L272,60Z"/>
+
+              <!-- ══ RUSSIA ══ (large, stretches across) -->
+              <path data-cid="russia" d="M282,28 L320,20 L370,16 L420,18 L458,24 L480,32 L488,45 L478,60 L445,68 L405,72 L365,74 L330,72 L308,64 L290,64 L278,55 L270,42Z"/>
+              <!-- Siberia east -->
+              <path data-cid="russia" d="M478,28 L510,22 L528,30 L525,45 L505,52 L480,50 L470,40Z"/>
+
+              <!-- ══ MIDDLE EAST ══ -->
+              <!-- Turkey -->
+              <path data-cid="turkey" d="M275,88 L320,82 L340,86 L342,98 L328,106 L295,108 L272,102 L270,92Z"/>
+              <!-- Syria/Iraq -->
+              <path data-cid="iraq" d="M308,106 L342,100 L355,108 L352,122 L332,128 L308,124 L300,114Z"/>
+              <!-- Iran -->
+              <path data-cid="iran" d="M338,94 L375,88 L392,96 L390,114 L372,124 L348,124 L332,116 L330,102Z"/>
+              <!-- Saudi Arabia -->
+              <path data-cid="saudi" d="M300,122 L340,118 L360,124 L370,138 L362,156 L338,162 L308,158 L292,145 L288,130Z"/>
+              <!-- Israel/Palestine -->
+              <path data-cid="israel" d="M295,110 L305,108 L308,116 L302,122 L294,118Z"/>
+              <!-- UAE/Oman -->
+              <path data-cid="gulf" d="M362,148 L384,142 L395,150 L392,162 L374,165 L358,158Z"/>
+              <!-- Yemen -->
+              <path data-cid="saudi" d="M308,162 L345,158 L360,165 L355,175 L325,178 L305,172Z"/>
+              <!-- Afghanistan -->
+              <path data-cid="afghanistan" d="M380,92 L415,86 L428,96 L425,112 L400,118 L380,112Z"/>
+              <!-- Pakistan -->
+              <path data-cid="pakistan" d="M395,112 L432,106 L445,115 L442,132 L420,138 L396,132 L388,120Z"/>
+
+              <!-- ══ AFRICA ══ -->
+              <!-- Morocco/Algeria/Tunisia -->
+              <path data-cid="northafrica" d="M212,114 L268,110 L278,118 L275,132 L248,138 L220,136 L210,126Z"/>
+              <!-- Libya/Egypt -->
+              <path data-cid="egypt" d="M270,110 L315,108 L325,116 L322,132 L295,138 L272,136 L265,122Z"/>
+              <!-- Sudan -->
+              <path data-cid="sudan" d="M295,138 L330,132 L345,140 L342,158 L318,168 L295,162 L285,150Z"/>
+              <!-- Ethiopia/Somalia -->
+              <path data-cid="ethiopia" d="M318,162 L355,155 L368,165 L365,180 L340,185 L315,180 L308,168Z"/>
+              <!-- West Africa -->
+              <path data-cid="nigeria" d="M228,140 L275,136 L285,144 L280,162 L258,170 L232,168 L218,155 L215,144Z"/>
+              <!-- Congo/Central Africa -->
+              <path data-cid="drc" d="M272,168 L315,162 L330,170 L328,190 L305,198 L275,195 L260,180Z"/>
+              <!-- East Africa/Tanzania -->
+              <path data-cid="eastafrica" d="M330,178 L365,172 L378,182 L372,200 L345,208 L325,202 L318,188Z"/>
+              <!-- South Africa -->
+              <path data-cid="southafrica" d="M268,208 L312,202 L332,210 L328,228 L305,238 L275,235 L255,220 L255,210Z"/>
+              <!-- Madagascar -->
+              <path data-cid="madagascar" d="M338,215 L348,210 L356,220 L352,235 L340,238 L332,228Z"/>
+
+              <!-- ══ CENTRAL/SOUTH ASIA ══ -->
+              <!-- Kazakhstan -->
+              <path data-cid="kazakhstan" d="M360,72 L415,66 L435,74 L438,90 L415,98 L380,98 L355,90 L348,78Z"/>
+              <!-- India -->
+              <path data-cid="india" d="M400,130 L435,122 L448,132 L448,155 L435,170 L415,175 L396,162 L385,148 L385,135Z"/>
+              <!-- Sri Lanka -->
+              <path data-cid="india" d="M430,175 L438,172 L440,180 L432,182Z"/>
+
+              <!-- ══ EAST ASIA ══ -->
+              <!-- China -->
+              <path data-cid="china" d="M428,56 L480,48 L505,55 L508,72 L498,90 L472,100 L445,105 L425,100 L412,88 L412,70Z"/>
+              <!-- Mongolia -->
+              <path data-cid="mongolia" d="M428,52 L480,45 L505,52 L505,60 L478,64 L440,65 L425,58Z"/>
+              <!-- North Korea -->
+              <path data-cid="northkorea" d="M492,72 L508,68 L515,75 L510,86 L495,88 L486,80Z"/>
+              <!-- South Korea -->
+              <path data-cid="southkorea" d="M495,88 L510,85 L515,93 L505,100 L492,98Z"/>
+              <!-- Japan (main islands) -->
+              <path data-cid="japan" d="M512,65 L524,60 L532,68 L528,80 L515,82 L508,74Z"/>
+              <path data-cid="japan" d="M522,82 L532,78 L536,86 L530,93 L520,91Z"/>
+              <!-- Taiwan -->
+              <path data-cid="taiwan" d="M500,95 L508,92 L512,99 L505,104 L498,101Z"/>
+              <!-- Vietnam/SE Asia mainland -->
+              <path data-cid="seasia" d="M455,102 L480,98 L492,108 L488,125 L470,132 L452,125 L448,110Z"/>
+              <!-- Thailand/Myanmar -->
+              <path data-cid="seasia" d="M448,112 L465,108 L470,120 L462,135 L448,138 L440,125Z"/>
+              <!-- Philippines -->
+              <path data-cid="philippines" d="M498,110 L510,105 L518,112 L512,125 L498,125 L492,115Z"/>
+              <!-- Indonesia (Sumatra/Java) -->
+              <path data-cid="indonesia" d="M452,140 L490,135 L510,140 L512,152 L488,158 L455,155 L445,148Z"/>
+              <!-- Indonesia (Borneo/Sulawesi) -->
+              <path data-cid="indonesia" d="M490,135 L520,130 L535,138 L530,152 L510,155 L488,148Z"/>
+              <!-- Australia -->
+              <path data-cid="australia" d="M455,188 L512,178 L535,185 L540,205 L535,222 L515,235 L488,240 L460,235 L442,218 L440,200Z"/>
+              <!-- New Zealand (N island) -->
+              <path data-cid="newzealand" d="M522,232 L535,225 L542,232 L538,244 L524,246Z"/>
+              <!-- New Zealand (S island) -->
+              <path data-cid="newzealand" d="M520,248 L535,242 L540,252 L530,262 L518,258Z"/>
+              <!-- Panama -->
+              <path data-cid="panama" d="M112,175 L122,172 L130,178 L124,185 L110,183Z"/>
+
+              <!-- Animation overlay layer -->
+              <g id="anim-svg-layer"></g>
             </svg>
+            <div id="anim-layer"></div>
             <div class="map-tip" id="map-tip"></div>
           </div>
           <div class="map-legend">
@@ -402,13 +567,14 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
             <div class="ml"><div class="ml-dot" style="background:#7a4a08"></div>TENSE</div>
             <div class="ml"><div class="ml-dot" style="background:#6e1018"></div>HOSTILE</div>
             <div class="ml"><div class="ml-dot" style="background:#c8102e"></div>WAR</div>
-            <div class="ml"><div class="ml-dot" style="background:#7a6800"></div>ANNEXED</div>
+            <div class="ml"><div class="ml-dot" style="background:#8b7200"></div>ANNEXED</div>
             <div class="ml"><div class="ml-dot" style="background:#162535"></div>NEUTRAL</div>
           </div>
           <div class="cpanel" id="cpanel">
             <div class="cp-empty">👆 Click any country on the map</div>
           </div>
         </div>
+
         <!-- TWEETS -->
         <div class="pane" id="pane-tweets">
           <div id="tweets-container">
@@ -458,6 +624,17 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
   </div>
 </div>
 
+<!-- ANNEXATION WIN -->
+<div id="annexwin-screen" class="screen" style="background:radial-gradient(ellipse at center,#0a1500 0%,var(--dark) 70%);align-items:center;justify-content:center;text-align:center;padding:30px">
+  <div style="font-size:72px;margin-bottom:12px">🌍</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,8vw,80px);color:var(--gold);text-shadow:4px 4px 0 var(--red);margin-bottom:8px">WORLD CONQUEST COMPLETE</div>
+  <div style="font-family:'Special Elite',serif;font-size:16px;color:var(--text);max-width:540px;margin:0 auto 20px;line-height:1.8">You have annexed every country on Earth through a combination of airstrikes, nuclear weapons, MOAB drops, and strongly worded letters. The United Nations building is now a Trump hotel. Every nation flies the American flag. Every currency is the dollar. Every menu is in English and includes a Big Mac. You have achieved what no one in history has achieved: total global domination. Historians are unable to process this. They are all in therapy.</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--red);margin-bottom:6px">Countries Annexed: <span id="annex-win-count">0</span></div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--gold);margin-bottom:20px">Score: <span id="annex-win-score">0</span></div>
+  <div style="font-size:12px;color:var(--muted);font-style:italic;margin-bottom:24px">"I always said I could do it. Everyone said it was impossible. Those people are now in prison (in TrumpLand, formerly France)."</div>
+  <button class="btn-restart sec" onclick="startGame()">🔄 PLAY AGAIN (THE WORLD IS GONE)</button>
+</div>
+
 <!-- GAME OVER -->
 <div id="gameover-screen" class="screen">
   <div class="end-title" style="font-size:clamp(50px,12vw,115px)">GAME OVER</div>
@@ -467,14 +644,50 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
   <button class="btn-restart" onclick="startGame()">🔄 RUN AGAIN (SAD!)</button>
 </div>
 
-<!-- WIN -->
-<div id="win-screen" class="screen">
-  <div class="win-title" style="font-size:clamp(40px,10vw,100px)">TERM COMPLETE</div>
-  <div class="end-sub">You survived 4 years. The world is traumatized.</div>
-  <div class="end-reason" id="win-reason"></div>
-  <div class="end-score">Score: <span id="win-score">0</span></div>
-  <button class="btn-restart" onclick="startTerm2()">🏛️ TERM 2: CHAOS AGAIN</button>
-  <button class="btn-restart sec" onclick="startGame()">🔄 START OVER</button>
+<!-- WIN SCREEN REMOVED — you can only lose -->
+
+<!-- RE-ELECTION SCREEN -->
+<div id="election-screen" class="screen" style="background:radial-gradient(ellipse at center,#0a1a2a 0%,var(--dark) 70%);align-items:center;justify-content:center;text-align:center;padding:30px">
+  <div style="font-size:60px;margin-bottom:12px">🗳️</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,8vw,80px);color:var(--gold);text-shadow:4px 4px 0 var(--red);margin-bottom:8px" id="elect-title">ELECTION TIME</div>
+  <div style="font-family:'Special Elite',serif;font-size:16px;color:var(--text);max-width:540px;margin:0 auto 24px;line-height:1.7" id="elect-desc">America goes to the polls. To win, you must promise the most unhinged things imaginable. Pick your campaign promises.</div>
+  <div style="width:100%;max-width:560px;display:flex;flex-direction:column;gap:10px;margin-bottom:24px" id="elect-options"></div>
+  <div style="font-size:11px;color:var(--muted);font-style:italic" id="elect-note">Pick 3 promises. Most unhinged wins.</div>
+</div>
+
+<!-- ELECTION RESULT -->
+<div id="elect-result-screen" class="screen" style="background:radial-gradient(ellipse at center,#0a1a0a 0%,var(--dark) 70%);align-items:center;justify-content:center;text-align:center;padding:30px">
+  <div style="font-size:70px;margin-bottom:10px" id="er-emoji">🎉</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,9vw,90px);color:var(--gold);text-shadow:4px 4px 0 var(--red)" id="er-title">RE-ELECTED!</div>
+  <div style="font-family:'Special Elite',serif;font-size:15px;color:var(--text);max-width:520px;margin:16px auto 24px;line-height:1.7" id="er-body"></div>
+  <button class="btn-restart" id="er-btn">🏛️ CONTINUE GOVERNING</button>
+</div>
+
+<!-- TERM 3 SCHEME -->
+<div id="term3-screen" class="screen" style="background:radial-gradient(ellipse at center,#1a0a00 0%,var(--dark) 70%);align-items:center;justify-content:center;text-align:center;padding:30px">
+  <div style="font-size:60px;margin-bottom:12px">📜</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,7vw,72px);color:var(--red);margin-bottom:10px">TERM LIMITS ARE UNCONSTITUTIONAL</div>
+  <div style="font-family:'Special Elite',serif;font-size:15px;color:var(--text);max-width:540px;margin:0 auto 24px;line-height:1.8">You have completed TWO terms. The 22nd Amendment says you're done. But you have declared the 22nd Amendment "extremely unfair and probably written by Obama." To run a third time, you must scheme your way around the constitution. Pick your approach:</div>
+  <div style="width:100%;max-width:560px;display:flex;flex-direction:column;gap:10px" id="term3-options"></div>
+</div>
+
+<!-- TERM 4 SCHEME -->
+<div id="term4-screen" class="screen" style="background:radial-gradient(ellipse at center,#1a1a00 0%,var(--dark) 70%);align-items:center;justify-content:center;text-align:center;padding:30px">
+  <div style="font-size:60px;margin-bottom:12px">👑</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,66px);color:var(--gold);margin-bottom:10px">PRESIDENT-FOR-LIFE?</div>
+  <div style="font-family:'Special Elite',serif;font-size:15px;color:var(--text);max-width:540px;margin:0 auto 24px;line-height:1.8">Somehow you're running for a FOURTH term. Congress has forgotten what laws are. The Supreme Court is nine people who owe you favors. Pick your campaign strategy for the unprecedented 4th campaign:</div>
+  <div style="width:100%;max-width:560px;display:flex;flex-direction:column;gap:10px" id="term4-options"></div>
+</div>
+
+<!-- DEATH ENDING -->
+<div id="death-screen" class="screen" style="background:radial-gradient(ellipse at center,#050505 0%,var(--dark) 70%);align-items:center;justify-content:center;text-align:center;padding:30px">
+  <div style="font-size:80px;margin-bottom:14px">⚰️</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,6vw,60px);color:var(--gold);letter-spacing:2px;margin-bottom:10px">FOUR TERMS COMPLETE</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,5vw,48px);color:var(--red);margin-bottom:20px">CAUSE OF DEATH: TESTICULAR CANCER</div>
+  <div style="font-family:'Special Elite',serif;font-size:15px;color:var(--text);max-width:560px;margin:0 auto 24px;line-height:1.8">After completing an unprecedented four terms as President of the United States, you passed away quietly in the Oval Office during your fourth term, mid-tweet. The tweet was never finished. It simply read: "Just been told I have testicular can—". The world mourned for approximately 45 minutes before markets reopened. You were 82. Your final approval rating was 23%. Your final chaos rating was 97%. The wall was 12% complete. Stephen Miller wept. Nobody else did.</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);margin-bottom:20px">Final Score: <span id="death-score">0</span></div>
+  <div style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:24px">"He was tremendous. The best president, many people say. The cancer was a witch hunt." — Melania, probably</div>
+  <button class="btn-restart sec" onclick="startGame()">🔄 PLAY AGAIN (HE WOULDN'T)</button>
 </div>
 
 <!-- MAGA LOSS -->
@@ -493,6 +706,43 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
 // ══════════════════════════════════════════════════════════════
 let S = {}, openCid = null, pending = null, usedIds = new Set();
 
+// ══════════════════════════════════════════════════════════════
+// LOADING SCREEN
+// ══════════════════════════════════════════════════════════════
+(function runLoader(){
+  const msgs = [
+    ['Assembling the cabinet...', 'The best people. Maybe.'],
+    ['Counting the inauguration crowd...', 'Biggest ever. Period.'],
+    ['Installing the golden toilet...', 'Very classy. Very necessary.'],
+    ['Firing the previous guy...', 'He was weak. Very weak.'],
+    ['Ordering 14 Diet Cokes...', 'The drink of winners.'],
+    ['Adjusting the tie length...', 'Experts say it is too long.'],
+    ['Calling Mar-a-Lago...', 'Official business. Definitely.'],
+    ['Checking the Fox News ratings...', 'Still the best, they say.'],
+    ['Drafting executive orders...', 'Nobody reads them. That\'s fine.'],
+    ['Warming up the tweet finger...', 'This is the most important step.'],
+  ];
+  const bar = document.getElementById('load-bar');
+  const msgEl = document.getElementById('load-msg');
+  const subEl = document.getElementById('load-sub');
+  let step = 0;
+  const total = msgs.length;
+  function tick(){
+    if(step >= total){
+      showScreen('title-screen');
+      return;
+    }
+    const [m, s] = msgs[step];
+    msgEl.textContent = m;
+    subEl.textContent = s;
+    const pct = Math.round((step+1)/total*100);
+    bar.style.width = pct + '%';
+    step++;
+    setTimeout(tick, 280 + Math.random()*180);
+  }
+  setTimeout(tick, 400);
+})();
+
 function fresh() {
   return {
     day:1, term:1, score:0,
@@ -502,51 +752,75 @@ function fresh() {
 }
 
 function countries() {
+  // Weighted random relationship — no war or annexed on fresh start
+  // Weights: ally=40%, tense=40%, hostile=20%
+  function rRel(bias){
+    const r=Math.random();
+    if(bias==='ally') return r<0.6?'ally':r<0.9?'tense':'hostile';
+    if(bias==='hostile') return r<0.5?'hostile':r<0.8?'tense':'ally';
+    // neutral bias — even spread
+    return r<0.4?'ally':r<0.75?'tense':'hostile';
+  }
+  const mk=(name,flag,bias,extra={})=>Object.assign(
+    {name,flag,rel:rRel(bias),troops:0,bombed:false,annexed:false},extra
+  );
   return {
-    usa:        {name:'USA (Yourself)',  flag:'🇺🇸', rel:'neutral', troops:0, bombed:false, annexed:false, noAction:true},
-    canada:     {name:'Canada',          flag:'🇨🇦', rel:'ally',    troops:0, bombed:false, annexed:false, annexable:true},
-    mexico:     {name:'Mexico',          flag:'🇲🇽', rel:'tense',   troops:0, bombed:false, annexed:false},
-    greenland:  {name:'Greenland',       flag:'🇬🇱', rel:'tense',   troops:0, bombed:false, annexed:false, annexable:true},
-    uk:         {name:'United Kingdom',  flag:'🇬🇧', rel:'ally',    troops:0, bombed:false, annexed:false},
-    france:     {name:'France',          flag:'🇫🇷', rel:'ally',    troops:0, bombed:false, annexed:false},
-    germany:    {name:'Germany',         flag:'🇩🇪', rel:'ally',    troops:0, bombed:false, annexed:false},
-    russia:     {name:'Russia',          flag:'🇷🇺', rel:'ally',    troops:0, bombed:false, annexed:false},
-    china:      {name:'China',           flag:'🇨🇳', rel:'tense',   troops:0, bombed:false, annexed:false},
-    northkorea: {name:'North Korea',     flag:'🇰🇵', rel:'hostile', troops:0, bombed:false, annexed:false},
-    southkorea: {name:'South Korea',     flag:'🇰🇷', rel:'ally',    troops:0, bombed:false, annexed:false},
-    japan:      {name:'Japan',           flag:'🇯🇵', rel:'ally',    troops:0, bombed:false, annexed:false},
-    iran:       {name:'Iran',            flag:'🇮🇷', rel:'hostile', troops:0, bombed:false, annexed:false},
-    iraq:       {name:'Iraq/Syria',      flag:'🇮🇶', rel:'tense',   troops:0, bombed:false, annexed:false},
-    saudi:      {name:'Saudi Arabia',    flag:'🇸🇦', rel:'ally',    troops:0, bombed:false, annexed:false},
-    turkey:     {name:'Turkey',          flag:'🇹🇷', rel:'tense',   troops:0, bombed:false, annexed:false},
-    ukraine:    {name:'Ukraine',         flag:'🇺🇦', rel:'ally',    troops:0, bombed:false, annexed:false},
-    denmark:    {name:'Denmark',         flag:'🇩🇰', rel:'ally',    troops:0, bombed:false, annexed:false},
-    panama:     {name:'Panama',          flag:'🇵🇦', rel:'tense',   troops:0, bombed:false, annexed:false, annexable:true},
-    venezuela:  {name:'Venezuela',       flag:'🇻🇪', rel:'hostile', troops:0, bombed:false, annexed:false},
-    colombia:   {name:'Colombia',        flag:'🇨🇴', rel:'ally',    troops:0, bombed:false, annexed:false},
-    brazil:     {name:'Brazil',          flag:'🇧🇷', rel:'tense',   troops:0, bombed:false, annexed:false},
-    india:      {name:'India',           flag:'🇮🇳', rel:'ally',    troops:0, bombed:false, annexed:false},
-    pakistan:   {name:'Pakistan',        flag:'🇵🇰', rel:'tense',   troops:0, bombed:false, annexed:false},
-    australia:  {name:'Australia',       flag:'🇦🇺', rel:'ally',    troops:0, bombed:false, annexed:false},
-    nigeria:    {name:'Nigeria',         flag:'🇳🇬', rel:'tense',   troops:0, bombed:false, annexed:false},
-    southafrica:{name:'South Africa',    flag:'🇿🇦', rel:'tense',   troops:0, bombed:false, annexed:false},
-    egypt:      {name:'Egypt',           flag:'🇪🇬', rel:'tense',   troops:0, bombed:false, annexed:false},
-    italy:      {name:'Italy',           flag:'🇮🇹', rel:'ally',    troops:0, bombed:false, annexed:false},
-    spain:      {name:'Spain',           flag:'🇪🇸', rel:'ally',    troops:0, bombed:false, annexed:false},
-    poland:     {name:'Poland',          flag:'🇵🇱', rel:'ally',    troops:0, bombed:false, annexed:false},
-    seasia:     {name:'SE Asia',         flag:'🌏', rel:'tense',    troops:0, bombed:false, annexed:false},
-    indonesia:  {name:'Indonesia',       flag:'🇮🇩', rel:'tense',   troops:0, bombed:false, annexed:false},
-    centralam:  {name:'Central America', flag:'🌎', rel:'tense',    troops:0, bombed:false, annexed:false},
-    cuba:       {name:'Cuba',            flag:'🇨🇺', rel:'hostile', troops:0, bombed:false, annexed:false},
-    drc:        {name:'DR Congo',        flag:'🇨🇩', rel:'tense',   troops:0, bombed:false, annexed:false},
-    ethiopia:   {name:'Ethiopia',        flag:'🇪🇹', rel:'tense',   troops:0, bombed:false, annexed:false},
-    northafrica:{name:'North Africa',    flag:'🌍', rel:'tense',    troops:0, bombed:false, annexed:false},
-    argentina:  {name:'Argentina',       flag:'🇦🇷', rel:'tense',   troops:0, bombed:false, annexed:false},
-    iceland:    {name:'Iceland',         flag:'🇮🇸', rel:'ally',    troops:0, bombed:false, annexed:false},
-    scandinavia:{name:'Scandinavia',     flag:'🇸🇪', rel:'ally',    troops:0, bombed:false, annexed:false},
-    newzealand: {name:'New Zealand',     flag:'🇳🇿', rel:'ally',    troops:0, bombed:false, annexed:false},
-    ireland:    {name:'Ireland',         flag:'🇮🇪', rel:'ally',    troops:0, bombed:false, annexed:false},
-    kazakhstan: {name:'Kazakhstan',      flag:'🇰🇿', rel:'tense',   troops:0, bombed:false, annexed:false},
+    usa:        mk('USA (Yourself)',  '🇺🇸','ally',{rel:'neutral',noAction:true}),
+    canada:     mk('Canada',          '🇨🇦','ally',{annexable:true}),
+    mexico:     mk('Mexico',          '🇲🇽','hostile'),
+    greenland:  mk('Greenland',       '🇬🇱','hostile',{annexable:true}),
+    uk:         mk('United Kingdom',  '🇬🇧','ally'),
+    france:     mk('France',          '🇫🇷','ally'),
+    germany:    mk('Germany',         '🇩🇪','ally'),
+    russia:     mk('Russia',          '🇷🇺','neutral'),
+    china:      mk('China',           '🇨🇳','hostile'),
+    northkorea: mk('North Korea',     '🇰🇵','hostile'),
+    southkorea: mk('South Korea',     '🇰🇷','ally'),
+    japan:      mk('Japan',           '🇯🇵','ally'),
+    iran:       mk('Iran',            '🇮🇷','hostile'),
+    iraq:       mk('Iraq/Syria',      '🇮🇶','neutral'),
+    saudi:      mk('Saudi Arabia',    '🇸🇦','ally'),
+    turkey:     mk('Turkey',          '🇹🇷','neutral'),
+    ukraine:    mk('Ukraine',         '🇺🇦','ally'),
+    denmark:    mk('Denmark',         '🇩🇰','ally'),
+    panama:     mk('Panama',          '🇵🇦','neutral',{annexable:true}),
+    venezuela:  mk('Venezuela',       '🇻🇪','hostile'),
+    colombia:   mk('Colombia',        '🇨🇴','neutral'),
+    brazil:     mk('Brazil',          '🇧🇷','neutral'),
+    india:      mk('India',           '🇮🇳','ally'),
+    pakistan:   mk('Pakistan',        '🇵🇰','neutral'),
+    australia:  mk('Australia',       '🇦🇺','ally'),
+    nigeria:    mk('Nigeria',         '🇳🇬','neutral'),
+    southafrica:mk('South Africa',    '🇿🇦','neutral'),
+    egypt:      mk('Egypt',           '🇪🇬','neutral'),
+    italy:      mk('Italy',           '🇮🇹','ally'),
+    spain:      mk('Spain',           '🇪🇸','ally'),
+    poland:     mk('Poland',          '🇵🇱','ally'),
+    seasia:     mk('SE Asia',         '🌏','neutral'),
+    indonesia:  mk('Indonesia',       '🇮🇩','neutral'),
+    centralam:  mk('Central America', '🌎','hostile'),
+    cuba:       mk('Cuba',            '🇨🇺','hostile'),
+    drc:        mk('DR Congo',        '🇨🇩','neutral'),
+    ethiopia:   mk('Ethiopia',        '🇪🇹','neutral'),
+    northafrica:mk('North Africa',    '🌍','neutral'),
+    argentina:  mk('Argentina',       '🇦🇷','neutral'),
+    iceland:    mk('Iceland',         '🇮🇸','ally'),
+    scandinavia:mk('Scandinavia',     '🇸🇪','ally'),
+    newzealand: mk('New Zealand',     '🇳🇿','ally'),
+    ireland:    mk('Ireland',         '🇮🇪','ally'),
+    kazakhstan: mk('Kazakhstan',      '🇰🇿','neutral'),
+    balkans:    mk('Balkans',         '🇷🇸','neutral'),
+    baltics:    mk('Baltic States',   '🇱🇻','ally'),
+    mongolia:   mk('Mongolia',        '🇲🇳','neutral'),
+    taiwan:     mk('Taiwan',          '🇹🇼','ally'),
+    philippines:mk('Philippines',     '🇵🇭','ally'),
+    afghanistan:mk('Afghanistan',     '🇦🇫','hostile'),
+    israel:     mk('Israel',          '🇮🇱','ally'),
+    gulf:       mk('Gulf States',     '🇦🇪','ally'),
+    sudan:      mk('Sudan',           '🇸🇩','neutral'),
+    eastafrica: mk('East Africa',     '🌍','neutral'),
+    madagascar: mk('Madagascar',      '🇲🇬','neutral'),
+    peru:       mk('Peru',            '🇵🇪','neutral'),
   };
 }
 
@@ -618,7 +892,7 @@ function doIceOp(op) {
   addLog(op.label, op.result);
   addTweet(makeTweetText('ice', op));
   updateStats(); updateMood();
-  showResult(op.hl, op.result, op.effects);
+  popRes(op.hl, op.result, op.effects);
   pending = ()=>{ checkEnd(); };
 }
 
@@ -996,102 +1270,33 @@ const EP = [
   ]},
 ];
 
-// ══════════════════════════════════════════════════════════════
-// WORLD MAP ACTIONS
-// ══════════════════════════════════════════════════════════════
-function getMapActions(cid) {
-  const c = S.countries[cid];
-  if(!c || c.noAction) return [];
-  const acts = [];
-  if(c.annexed) return acts;
-  acts.push({label:'💰 Send Aid',      cls:'ab-aid',      key:'aid'});
-  acts.push({label:'📋 Sanction',      cls:'ab-sanction', key:'sanction'});
-  acts.push({label:'🕊️ Peace Deal',   cls:'ab-peace',    key:'peace'});
-  acts.push({label:'🪖 Deploy Troops', cls:'ab-troops',   key:'troops'});
-  if(c.troops>0) acts.push({label:'✈️ Withdraw',cls:'ab-withdraw',key:'withdraw'});
-  if(['tense','hostile','war'].includes(c.rel)){
-    acts.push({label:'💣 Airstrike',   cls:'ab-bomb',     key:'bomb'});
-    acts.push({label:'💥 MOAB Drop',   cls:'ab-moab',     key:'moab'});
-    acts.push({label:'☢️ NUCLEAR',     cls:'ab-nuke',     key:'nuke'});
-  }
-  if(c.annexable) acts.push({label:'🏳️ ANNEX',cls:'ab-annex',key:'annex'});
-  if(['mexico','centralam','venezuela','colombia'].includes(cid))
-    acts.push({label:'🚔 Deport From',cls:'ab-deport',key:'deport'});
-  return acts;
-}
-
-const mapActionFns = {
-  aid(cid){
-    const c=S.countries[cid]; const prev=c.rel;
-    if(c.rel==='war')c.rel='hostile'; else if(c.rel==='hostile')c.rel='tense'; else if(c.rel==='tense')c.rel='ally';
-    applyFx({economy:-5,world:+5,approval:-3});
-    popRes(`AID SENT TO ${c.name.toUpperCase()}`,`$2B dispatched to ${c.name}. Relations: ${prev} → ${c.rel}. Your base asks why you\\'re helping foreigners.`,{economy:-5,world:+5,approval:-3});
-  },
-  sanction(cid){
-    const c=S.countries[cid];
-    if(c.rel==='ally')c.rel='tense';
-    applyFx({economy:-3,world:-5,chaos:+5});
-    popRes(`SANCTIONS ON ${c.name.toUpperCase()}`,`Sweeping sanctions on ${c.name}. Their economy hurts. Yours a little too. You call it "the most sanctions ever."`,{economy:-3,world:-5,chaos:+5});
-  },
-  peace(cid){
-    const c=S.countries[cid];
-    if(c.rel==='war')c.rel='hostile'; else if(c.rel==='hostile')c.rel='tense'; else c.rel='ally';
-    applyFx({world:+12,approval:+8,chaos:-5,maga:+5});
-    popRes(`PEACE DEAL WITH ${c.name.toUpperCase()}`,`Peace with ${c.name} announced. You call it the greatest deal in the history of deals. They call it a start. You call that ungrateful.`,{world:+12,approval:+8,chaos:-5});
-  },
-  troops(cid){
-    const c=S.countries[cid]; c.troops+=5000;
-    if(c.rel==='ally')c.rel='tense';
-    applyFx({world:-8,economy:-8,chaos:+10});
-    popRes(`TROOPS DEPLOYED TO ${c.name.toUpperCase()}`,`5,000 troops deployed to ${c.name}. Generals are nervous. You are not.`,{world:-8,economy:-8,chaos:+10});
-  },
-  withdraw(cid){
-    const c=S.countries[cid]; const n=c.troops; c.troops=0;
-    applyFx({world:+5,economy:+3});
-    popRes(`TROOPS WITHDRAWN FROM ${c.name.toUpperCase()}`,`${n.toLocaleString()} troops recalled. The UN is relieved. Your base calls it weakness.`,{world:+5,economy:+3});
-  },
-  bomb(cid){
-    const c=S.countries[cid]; c.bombed=true; if(c.rel!=='war')c.rel='hostile';
-    applyFx({world:-15,chaos:+20,legal:+10,approval:-5,maga:-8});
-    popRes(`US AIRSTRIKES ON ${c.name.toUpperCase()}`,`Conventional airstrikes launched. UN condemns. Russia calls it escalatory. You tweet it was "very precise and beautiful."`,{world:-15,chaos:+20,legal:+10,approval:-5});
-  },
-  moab(cid){
-    const c=S.countries[cid]; c.bombed=true; c.rel='war';
-    applyFx({world:-25,chaos:+30,legal:+20,approval:-10,maga:-12});
-    popRes(`MOAB DROPPED ON ${c.name.toUpperCase()}`,`The Mother of All Bombs deployed. Seismographs in 14 countries registered it. You called it "beautiful from a distance."`,{world:-25,chaos:+30,legal:+20,approval:-10});
-  },
-  nuke(cid){
-    const c=S.countries[cid]; c.bombed=true; c.rel='war';
-    applyFx({world:-50,chaos:+50,legal:+40,approval:-30,maga:-25});
-    popRes(`☢️ NUCLEAR STRIKE ON ${c.name.toUpperCase()} — WORLD IN CRISIS`,`You launched a nuclear weapon at ${c.name}. Every hotline rings simultaneously. All of NATO is screaming. Russia is screaming. You are tweeting.`,{world:-50,chaos:+50,legal:+40,approval:-30});
-  },
-  annex(cid){
-    const c=S.countries[cid]; c.rel='annexed'; c.annexed=true;
-    applyFx({world:-40,chaos:+40,legal:+30,economy:+10,maga:-15});
-    popRes(`UNITED STATES ANNEXES ${c.name.toUpperCase()}`,`The US has officially annexed ${c.name}. 160 nations vote to condemn. You count the 3 that didn\\'t as strong bipartisan support.`,{world:-40,chaos:+40,legal:+30,economy:+10});
-  },
-  deport(cid){
-    const c=S.countries[cid];
-    applyFx({deported:+0.5,approval:+3,economy:-8,world:-12,chaos:+10});
-    popRes(`DEPORTATION FLIGHTS TO ${c.name.toUpperCase()}`,`500,000 deported to ${c.name}. ${c.name} reluctantly accepts after US threatens tariffs. Agricultural sector reports labor shortages.`,{deported:+0.5,approval:+3,economy:-8,world:-12});
-  },
-};
 
 // ══════════════════════════════════════════════════════════════
-// CORE GAME
+// CORE GAME LOOP
 // ══════════════════════════════════════════════════════════════
 function startGame(){
   S=fresh(); openCid=null; pending=null; usedIds=new Set();
+  S.nextElectionDay=730;
+  clearDecisions();
   showScreen('game-screen'); updateStats(); initMap(); renderIceActions(); loadEvent();
 }
-function startTerm2(){
-  S.term=2; S.day=1461; S.legal=Math.max(S.legal-10,5); S.chaos=Math.max(S.chaos-10,10);
+function startTerm(n){
+  S.term=n;
+  const tsd={2:1461,3:2922,4:4383};
+  S.day=tsd[n]||S.day;
+  S.nextElectionDay=n<4?S.day+730:99999;
+  S.legal=Math.max(S.legal-10,5); S.chaos=Math.max(S.chaos-10,10);
   S.maga=Math.max(S.maga-10,0); usedIds=new Set(); openCid=null;
-  showScreen('game-screen'); updateStats(); initMap(); loadEvent();
+  clearDecisions();
+  showScreen('game-screen'); updateStats(); initMap(); renderIceActions(); loadEvent();
 }
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+let decisionHistory=[];
+function clearDecisions(){decisionHistory=[];const c=document.getElementById('dec-container');if(c)c.innerHTML='';}
 
 function loadEvent(){
+  if(S.day>=S.nextElectionDay&&S.term<=3){triggerElection();return;}
   let pool=EP.filter(e=>!usedIds.has(e.id));
   if(!pool.length){usedIds.clear();pool=EP;}
   const ev=pool[Math.floor(Math.random()*pool.length)];
@@ -1103,54 +1308,65 @@ function renderEvent(ev){
   document.getElementById('ev-tag').textContent=ev.tag;
   document.getElementById('ev-title').textContent=ev.title;
   document.getElementById('ev-desc').textContent=ev.desc;
-  document.getElementById('ev-day').textContent=`DAY ${S.day} — ${dayLabel()}`;
-  const c=document.getElementById('dec-container'); c.innerHTML='';
+  document.getElementById('ev-day').textContent='DAY '+S.day+' — '+dayLabel();
+  const container=document.getElementById('dec-container');
+  container.querySelectorAll('.dec-btn:not(.used)').forEach(el=>el.remove());
+  const used=container.querySelectorAll('.dec-btn.used');
+  if(used.length>16) Array.from(used).slice(0,used.length-16).forEach(el=>el.remove());
   [...ev.decisions].sort(()=>Math.random()-.5).forEach(d=>{
     const btn=document.createElement('div');
     const tc=d.type==='chaos'?'chaos':d.type==='sane'?'sane':d.type==='deny'?'deny':'normal';
-    btn.className=`dec-btn ${tc}`;
-    btn.onclick=()=>decide(d);
+    btn.className='dec-btn '+tc;
+    btn.onclick=()=>decide(d,btn);
     const bl={chaos:'🔥 VERY TRUMP',sane:'✅ REASONABLE',deny:'❌ NOT TRUMP',normal:'📌 CLASSIC TRUMP'};
     let fx='';
-    for(let[k,v] of Object.entries(d.effects)){
-      const good=(k==='legal'||k==='chaos')? v<0 : (k==='maga'? v<0 : v>0);
-      fx+=`<span class="fx ${good?'pos':'neg'}">${slabel(k)} ${v>0?'+':''}${v}</span>`;
+    for(const [k,v] of Object.entries(d.effects)){
+      const good=(k==='legal'||k==='chaos')?v<0:(k==='maga'?v<0:v>0);
+      fx+='<span class="fx '+(good?'pos':'neg')+'">'+slabel(k)+' '+(v>0?'+':'')+v+'</span>';
     }
-    btn.innerHTML=`<div class="dbadge ${tc}">${bl[d.type]||bl.normal}</div>
-      <div class="dname">${d.name}</div><div class="ddesc">${d.desc||''}</div>
-      <div class="dfx">${fx}</div>`;
-    c.appendChild(btn);
+    btn.innerHTML='<div class="dbadge '+tc+'">'+(bl[d.type]||bl.normal)+'</div>'
+      +'<div class="dname">'+d.name+'</div>'
+      +'<div class="ddesc">'+(d.desc||'')+'</div>'
+      +'<div class="dfx">'+fx+'</div>';
+    container.appendChild(btn);
   });
+  const scroll=document.getElementById('dec-scroll');
+  if(scroll) setTimeout(()=>{scroll.scrollTop=scroll.scrollHeight;},60);
 }
 
-function slabel(k){return{approval:'Approval',economy:'Economy',world:'Relations',legal:'Legal',wall:'Wall',chaos:'Chaos',maga:'🇺🇸MAGA',deported:'Deported'}[k]||k}
+function slabel(k){return({approval:'Approval',economy:'Economy',world:'Relations',legal:'Legal',wall:'Wall',chaos:'Chaos',maga:'MAGA',deported:'Deported'})[k]||k;}
 
-function decide(d){
+function decide(d,btn){
+  const container=document.getElementById('dec-container');
+  container.querySelectorAll('.dec-btn:not(.used)').forEach(el=>{
+    el.classList.add('used'); el.onclick=null;
+    el.style.opacity=el===btn?'0.75':'0.28';
+    el.style.transform='none'; el.style.cursor='default';
+    if(el!==btn) el.style.filter='grayscale(1)';
+  });
   applyFx(d.effects);
   S.day+=7+Math.floor(Math.random()*14);
   S.score+=Math.floor((S.approval*.3)+(S.economy*.2)+(S.world*.1)-(S.legal*.2)-(S.maga*.05));
-  addLog(d.name, d.result);
+  addLog(d.name,d.result);
   if(d.tweet) addTweet(d.tweet);
   updateMood(); updateStats();
-  popRes(d.hl||'BREAKING NEWS', d.result, d.effects);
-  pending=()=>{ if(!checkEnd()) loadEvent(); };
+  popRes(d.hl||'BREAKING NEWS',d.result,d.effects);
+  pending=()=>{if(!checkEnd()) loadEvent();};
 }
 
-function applyFx(fx){
-  for(let[k,v] of Object.entries(fx)) S[k]=clamp((S[k]||0)+v);
-}
-function clamp(v){return Math.max(0,Math.min(100,v))}
+function applyFx(fx){for(const [k,v] of Object.entries(fx)) S[k]=clamp((S[k]||0)+v);}
+function clamp(v){return Math.max(0,Math.min(100,v));}
 
 function checkEnd(){
-  if(S.maga>=100){
-    document.getElementById('maga-score').textContent=Math.round(S.score);
-    showScreen('maga-screen'); return true;
+  // ONLY lose condition: Making America Great Again (MAGA hits 100)
+  if(S.maga>=100){document.getElementById('maga-score').textContent=Math.round(S.score);showScreen('maga-screen');return true;}
+  // Win conditions handled by term endings and checkAnnexWin
+  const termEndDay={1:1460,2:2921,3:4382,4:5843};
+  if(S.day>(termEndDay[S.term]||9999)){
+    if(S.term===4){triggerDeathEnding();return true;}
+    else if(S.term===3){showTerm4Scheme();return true;}
+    else if(S.term===2){showTerm3Scheme();return true;}
   }
-  if(S.approval<=4){endGame('RESIGNED IN DISGRACE',"Approval bottomed out. Even Fox News gave up. You resigned to spend more time with family and filing lawsuits.");return true;}
-  if(S.legal>=96){endGame('CONVICTED',"91 felony counts finally stuck. You claimed witch hunt all the way to the cell.");return true;}
-  if(S.economy<=4){endGame('ECONOMIC COLLAPSE',"The tariffs, shutdowns, and market tweets finally broke it. McDonald\\'s ran out of Big Macs.");return true;}
-  if(S.chaos>=98){endGame('TOTAL CHAOS',"The nation is ungovernable. The White House is somehow on fire. From a tweet.");return true;}
-  if(S.day>1460){winGame();return true;}
   return false;
 }
 
@@ -1158,9 +1374,9 @@ function popRes(hl,body,fx){
   document.getElementById('r-hl').textContent=hl;
   document.getElementById('r-body').textContent=body;
   let s='';
-  if(fx) for(let[k,v] of Object.entries(fx)){
-    const good=(k==='legal'||k==='chaos')? v<0 : (k==='maga'? v<0 : v>0);
-    s+=`<span class="r-stat ${good?'up':'dn'}">${v>0?'▲':'▼'} ${slabel(k)} ${Math.abs(v)}</span> `;
+  if(fx) for(const [k,v] of Object.entries(fx)){
+    const good=(k==='legal'||k==='chaos')?v<0:(k==='maga'?v<0:v>0);
+    s+='<span class="r-stat '+(good?'up':'dn')+'">'+(v>0?'▲':'▼')+' '+slabel(k)+' '+Math.abs(v)+'</span> ';
   }
   document.getElementById('r-stats').innerHTML=s;
   document.getElementById('result-overlay').classList.add('on');
@@ -1173,32 +1389,27 @@ function closeResult(){
 function addLog(name,result){
   const c=document.getElementById('log-container');
   const e=document.createElement('div'); e.className='log-entry';
-  e.innerHTML=`<div class="log-day">DAY ${S.day}</div><div class="log-act">${name}</div><div class="log-res">${result.substring(0,100)}...</div>`;
+  e.innerHTML='<div class="log-day">DAY '+S.day+'</div><div class="log-act">'+name+'</div><div class="log-res">'+result.substring(0,100)+'...</div>';
   c.insertBefore(e,c.firstChild);
 }
 
 function addTweet(text){
   const c=document.getElementById('tweets-container');
   const likes=(Math.floor(Math.random()*900)+100).toFixed(1)+'K';
-  const rts=(Math.floor(Math.random()*500)+50).toFixed(0)+'K';
+  const rts=(Math.floor(Math.random()*500)+50)+'K';
   const replies=(Math.floor(Math.random()*100)+10).toFixed(1)+'K';
   const e=document.createElement('div'); e.className='tweet-card';
-  e.innerHTML=`<div class="tw-header">
-    <div class="tw-avatar">👴</div>
-    <div class="tw-name-wrap">
-      <div class="tw-name">Donald J. Trump <span class="tw-verified">✓</span></div>
-      <div class="tw-handle">@realDonaldTrump</div>
-    </div>
-  </div>
-  <div class="tw-body">${text}</div>
-  <div class="tw-footer">
-    <span class="tw-stat">💬 ${replies}</span>
-    <span class="tw-stat retweeted">🔁 ${rts}</span>
-    <span class="tw-stat liked">❤️ ${likes}</span>
-    <span class="tw-time">Day ${S.day}</span>
-  </div>`;
+  e.innerHTML='<div class="tw-header"><div class="tw-avatar">👴</div>'
+    +'<div class="tw-name-wrap"><div class="tw-name">Donald J. Trump <span class="tw-verified">✓</span></div>'
+    +'<div class="tw-handle">@realDonaldTrump</div></div></div>'
+    +'<div class="tw-body">'+text+'</div>'
+    +'<div class="tw-footer"><span class="tw-stat">💬 '+replies+'</span>'
+    +'<span class="tw-stat retweeted">🔁 '+rts+'</span>'
+    +'<span class="tw-stat liked">❤️ '+likes+'</span>'
+    +'<span class="tw-time">Day '+S.day+'</span></div>';
   c.insertBefore(e,c.firstChild);
-  document.getElementById('ticker').textContent=`🔴 BREAKING: ${text.substring(0,80)}...   🔴 Markets react   🔴 World leaders respond`;
+  const ticker=document.getElementById('ticker');
+  if(ticker) ticker.textContent='🔴 BREAKING: '+text.substring(0,80)+'...   🔴 Markets react   🔴 World leaders respond';
 }
 
 function updateStats(){
@@ -1206,76 +1417,281 @@ function updateStats(){
     const v=Math.round(S[k]||0);
     const el=document.getElementById('sv-'+k);
     const bar=document.getElementById('sb-'+k);
-    if(el) el.textContent = k==='deported' ? (S.deported||0).toFixed(1) : v;
+    if(el) el.textContent=k==='deported'?(S.deported||0).toFixed(1):v;
     if(bar) bar.style.width=Math.min(100,v)+'%';
   });
-  document.getElementById('dc').textContent=S.day;
-  document.getElementById('tc').textContent=S.term;
-  document.getElementById('sc').textContent=Math.round(S.score);
-  // Update ICE panel deported count
-  const dt=document.getElementById('dep-total');
-  if(dt) dt.textContent=(S.deported||0).toFixed(1);
+  const dc=document.getElementById('dc'); if(dc) dc.textContent=S.day;
+  const tc=document.getElementById('tc'); if(tc) tc.textContent=S.term;
+  const sc=document.getElementById('sc'); if(sc) sc.textContent=Math.round(S.score);
+  const dt=document.getElementById('dep-total'); if(dt) dt.textContent=(S.deported||0).toFixed(1);
   const dn=document.getElementById('dep-note');
   if(dn){
-    const msgs=['No deportations yet. Stephen Miller is very disappointed.','Stephen Miller approves. One smile per million deported.','Record deportation numbers! Stephen Miller has smiled twice.','Historians are making comparisons. They are not flattering comparisons.'];
-    const i=Math.min(3,Math.floor((S.deported||0)));
-    dn.textContent=msgs[i];
+    const msgs=['No deportations yet. Stephen Miller is very disappointed.','Stephen Miller approves. One smile per million deported.','Record numbers! Stephen Miller has smiled twice.','Historians are making comparisons. They are not flattering.'];
+    dn.textContent=msgs[Math.min(3,Math.floor(S.deported||0))];
   }
-  // MAGA warning color
   const mb=document.getElementById('sb-maga');
   if(mb){
     const mv=S.maga||0;
     mb.style.background=mv>70?'#27ae60':mv>40?'#f39c12':'#1a5c35';
-    if(mv>80) mb.style.animation='warpulse 1s ease-in-out infinite';
-    else mb.style.animation='none';
+    mb.style.animation=mv>80?'warpulse 1s ease-in-out infinite':'none';
   }
 }
 
 function updateMood(){
   const m=[[15,'😤','FEELING VICTIMIZED'],[35,'😠','EXTREMELY ANGRY'],[55,'🤬','IN FULL MELTDOWN'],[80,'😱','NUCLEAR TRIGGERED'],[100,'🤡','BEYOND ALL REASON']];
   const x=m.find(x=>S.chaos<=x[0])||m[m.length-1];
-  document.getElementById('t-emoji').textContent=x[1];
-  document.getElementById('t-mood').textContent=x[2];
+  const te=document.getElementById('t-emoji'); if(te) te.textContent=x[1];
+  const tm=document.getElementById('t-mood'); if(tm) tm.textContent=x[2];
 }
 
 function endGame(r,d){
   document.getElementById('go-sub').textContent=r;
-  document.getElementById('go-reason').textContent=d+` Days: ${S.day}. Score: ${Math.round(S.score)}.`;
+  document.getElementById('go-reason').textContent=d+' Days: '+S.day+'. Score: '+Math.round(S.score)+'.';
   document.getElementById('go-score').textContent=Math.round(S.score);
   showScreen('gameover-screen');
 }
 
-function winGame(){
-  const msgs=[[200,'You kept America together. Mostly. People will argue forever. You will claim total victory.'],[100,'Chaotic but survivable. The world still exists. Markets partially recovered.'],[0,'You completed a term but historians will not be kind. Not even close.']];
-  const m=msgs.find(m=>S.score>=m[0])||msgs[msgs.length-1];
-  document.getElementById('win-reason').textContent=m[1];
-  document.getElementById('win-score').textContent=Math.round(S.score);
-  showScreen('win-screen');
+function triggerDeathEnding(){
+  document.getElementById('death-score').textContent=Math.round(S.score);
+  showScreen('death-screen');
 }
 
 function dayLabel(){
   const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  const y=S.term===1?2025:2029;
-  const d=new Date(y,0,20+S.day);
-  return `${months[d.getMonth()]} ${d.getFullYear()}`;
+  const tsy={1:2025,2:2029,3:2033,4:2037};
+  const tsd2={1:1,2:1461,3:2922,4:4383};
+  const y=tsy[S.term]||2025;
+  const dit=S.day-(tsd2[S.term]||0);
+  const dt=new Date(y,0,20+dit);
+  return months[dt.getMonth()]+' '+dt.getFullYear();
 }
 
 // ══════════════════════════════════════════════════════════════
-// WORLD MAP
+// ELECTIONS
+// ══════════════════════════════════════════════════════════════
+const electionPromises=[
+  {text:'Build a second wall — but this one FLOATS',chaos:15,approval:10,world:-8},
+  {text:'Make English the ONLY legal language, including for dogs',chaos:12,approval:8},
+  {text:'Rename the country TrumpLand (temporary)',chaos:18,approval:12,world:-15},
+  {text:'Deport anyone who has ever been mean to me online',chaos:15,approval:6,deported:0.5},
+  {text:'Ban all movies with subtitles',chaos:8,approval:5},
+  {text:'Put my face on the moon using lasers',chaos:20,approval:14,economy:-10},
+  {text:'Declare windmills a terrorist organization',chaos:10,approval:8},
+  {text:'Make McDonald\'s a federal agency',chaos:12,approval:15,economy:-8},
+  {text:'Eliminate the letter E from the alphabet',chaos:15,approval:6},
+  {text:'Demand Canada pay rent retroactively since 1867',chaos:18,world:-20,economy:5},
+  {text:'Replace the Supreme Court with nine people named Donald',chaos:25,legal:20,approval:10},
+  {text:'Make it illegal to think bad thoughts about me',chaos:20,legal:15,approval:8},
+  {text:'Annex Greenland via STRONGLY WORDED letter',chaos:15,world:-12},
+  {text:'Declare myself greatest leader in history including the future',chaos:10,approval:8},
+  {text:'Give everyone a gun AND a second gun',chaos:14,approval:12,legal:8},
+  {text:'Tariffs on imported oxygen — foreigners breathing our air',chaos:20,economy:-12,approval:10},
+  {text:'Require all news to begin with Tremendous leader Trump today',chaos:16,approval:6},
+  {text:'Send strongly worded letter to the moon about its orbit',chaos:8,approval:4},
+  {text:'Ban math — it has been personally unfair to me',chaos:15,approval:5},
+  {text:'Build a golf course in every national park',chaos:12,economy:6,approval:8},
+];
+
+let electPicksThisRound=[];
+function triggerElection(){
+  const nextTerm=S.term+1;
+  document.getElementById('elect-title').textContent=
+    nextTerm===2?'2028 RE-ELECTION':nextTerm===3?'THIRD TERM CAMPAIGN':'FOURTH TERM CAMPAIGN';
+  document.getElementById('elect-desc').textContent=
+    nextTerm===2?'America goes to the polls. To win you must promise the most unhinged things imaginable. Pick 3 campaign promises.':
+    nextTerm===3?'Constitutional lawyers are dead inside. You are running for a THIRD term. Pick 3 promises.':
+    'A fourth campaign. Historians have given up. Pick 3 final promises to seal your legacy.';
+  const pool=[...electionPromises].sort(()=>Math.random()-.5).slice(0,8);
+  electPicksThisRound=[];
+  const c=document.getElementById('elect-options'); c.innerHTML='';
+  pool.forEach(p=>{
+    const btn=document.createElement('button');
+    btn.className='btn-restart sec';
+    btn.style.cssText='font-family:"Special Elite",serif;font-size:13px;letter-spacing:0;padding:12px 18px;text-align:left;margin:0;width:100%;transition:all .2s;line-height:1.5';
+    btn.textContent=p.text;
+    btn.onclick=()=>{
+      if(electPicksThisRound.length>=3) return;
+      electPicksThisRound.push(p);
+      btn.style.background='var(--red)'; btn.style.borderColor='var(--gold)'; btn.disabled=true;
+      if(electPicksThisRound.length===3) setTimeout(resolveElection,600);
+    };
+    c.appendChild(btn);
+  });
+  showScreen('election-screen');
+}
+
+function resolveElection(){
+  electPicksThisRound.forEach(p=>{
+    for(const [k,v] of Object.entries(p)){
+      if(typeof v==='number'&&['approval','economy','world','legal','wall','chaos','maga','deported'].includes(k))
+        S[k]=clamp((S[k]||0)+v);
+    }
+  });
+  updateStats();
+  const win=S.chaos>35;
+  const nextTerm=S.term+1;
+  if(!win){endGame('LOST THE ELECTION','Your chaos was too low and your promises too sane. A normal politician beat you. America chose normality. You called it rigged.');return;}
+  let title,body,btnLabel,btnAction;
+  if(nextTerm===2){title='YOU WIN THE 2028 ELECTION';body='Re-elected! Your promises resonated with voters. You won the Electoral College. You lost the popular vote by 8 million but called it a historic landslide.';btnLabel='BEGIN TERM 2';btnAction=()=>startTerm(2);}
+  else if(nextTerm===3){title='THREE TERMS??';body='After your constitutional scheme succeeded you are running for a THIRD term. The Supreme Court approved it 9-0.';btnLabel='BEGIN TERM 3 (SOMEHOW)';btnAction=()=>startTerm(3);}
+  else{title='FOUR TERMS. UNPRECEDENTED.';body='FOUR terms. Legal experts say this is not allowed. You have banned legal experts.';btnLabel='BEGIN TERM 4 (THE END)';btnAction=()=>startTerm(4);}
+  document.getElementById('er-emoji').textContent=nextTerm>=4?'👑':'🎉';
+  document.getElementById('er-title').textContent=title;
+  document.getElementById('er-body').textContent=body;
+  const erBtn=document.getElementById('er-btn');
+  erBtn.textContent=btnLabel; erBtn.onclick=btnAction;
+  showScreen('elect-result-screen');
+}
+
+function showTerm3Scheme(){
+  const opts=[
+    {text:'Declare the 22nd Amendment unconstitutional via tweet',result:'It worked. Somehow. The tweet had 2.1 million likes.',chaos:20,legal:25},
+    {text:'Have Congress pass the Trump Is Special Circumstances Act',result:'Passes 218-217. One congressman was unconscious.',chaos:15,legal:20},
+    {text:'Claim you are technically in your second first term',result:'This argument convinces 47% of the country.',chaos:12},
+    {text:'Replace term limits with a vibe check — you pass yourself',result:'Constitutional law professors at 40 universities quit.',chaos:25,legal:15},
+  ];
+  renderSchemeScreen('term3-screen','term3-options',opts,()=>triggerElection());
+}
+function showTerm4Scheme(){
+  const opts=[
+    {text:'Declare yourself President Eternal at Mount Rushmore',result:'Your face is blasted onto Mount Rushmore. Charged to National Park Service.',chaos:25},
+    {text:'Executive order abolishing all term limits',result:'You sign it with 14 gold pens. Nobody stops you.',chaos:20,legal:30},
+    {text:'Have Elon buy and delete the 22nd Amendment',result:'Elon acquires the Constitution for 4.8 trillion and deletes amendments 1 through 22.',chaos:30,economy:-20},
+    {text:'Simply forget elections exist and start Term 4 anyway',result:'Nobody has the energy to argue anymore. Historians drink heavily.',chaos:15},
+  ];
+  renderSchemeScreen('term4-screen','term4-options',opts,()=>triggerElection());
+}
+function renderSchemeScreen(screenId,containerId,opts,onPick){
+  const c=document.getElementById(containerId); c.innerHTML='';
+  opts.forEach(o=>{
+    const btn=document.createElement('button');
+    btn.className='btn-restart sec';
+    btn.style.cssText='font-family:"Special Elite",serif;font-size:13px;padding:14px 20px;text-align:left;margin:0 0 8px 0;width:100%;letter-spacing:0;line-height:1.5';
+    btn.innerHTML='<b style="color:var(--gold)">'+o.text+'</b><br><span style="color:var(--muted);font-size:11px">'+o.result+'</span>';
+    btn.onclick=()=>{
+      for(const [k,v] of Object.entries(o)){
+        if(typeof v==='number'&&['approval','economy','world','legal','wall','chaos','maga','deported'].includes(k))
+          S[k]=clamp((S[k]||0)+v);
+      }
+      updateStats(); onPick();
+    };
+    c.appendChild(btn);
+  });
+  showScreen(screenId);
+}
+
+// ══════════════════════════════════════════════════════════════
+// WORLD MAP ACTIONS
+// ══════════════════════════════════════════════════════════════
+const mapActionFns = {
+  aid(cid){
+    const c=S.countries[cid]; const prev=c.rel;
+    if(c.rel==='war')c.rel='hostile'; else if(c.rel==='hostile')c.rel='tense'; else if(c.rel==='tense')c.rel='ally';
+    applyFx({economy:-5,world:+5,approval:-3});
+    popRes('AID SENT TO '+c.name.toUpperCase(),'$2B dispatched to '+c.name+'. Relations improved: '+prev+' → '+c.rel+'. Your base asks why you\'re helping foreigners.',{economy:-5,world:+5,approval:-3});
+  },
+  sanction(cid){
+    const c=S.countries[cid];
+    if(c.rel==='ally')c.rel='tense'; else if(c.rel==='tense')c.rel='hostile';
+    applyFx({economy:-3,world:-5,chaos:+5});
+    popRes('SANCTIONS ON '+c.name.toUpperCase(),'Sweeping sanctions on '+c.name+'. Their economy hurts. Yours too. You call it "the most sanctions ever."',{economy:-3,world:-5,chaos:+5});
+  },
+  peace(cid){
+    const c=S.countries[cid];
+    if(c.rel==='war')c.rel='hostile'; else if(c.rel==='hostile')c.rel='tense'; else c.rel='ally';
+    applyFx({world:+12,approval:+8,chaos:-5});
+    popRes('PEACE DEAL WITH '+c.name.toUpperCase(),'Peace with '+c.name+' announced. You call it the greatest deal in history. They call it a start.',{world:+12,approval:+8,chaos:-5});
+  },
+  troops(cid){
+    const c=S.countries[cid]; c.troops=(c.troops||0)+5000;
+    if(c.rel==='ally')c.rel='tense'; else if(c.rel==='tense')c.rel='hostile';
+    applyFx({world:-5,economy:-6,chaos:+8});
+    popRes('TROOPS DEPLOYED TO '+c.name.toUpperCase(),'5,000 troops deployed to '+c.name+'. Generals are nervous. You are not.',{world:-5,economy:-6,chaos:+8});
+  },
+  withdraw(cid){
+    const c=S.countries[cid]; const n=c.troops||0; c.troops=0;
+    applyFx({world:+5,economy:+3});
+    popRes('TROOPS WITHDRAWN FROM '+c.name.toUpperCase(),n.toLocaleString()+' troops recalled from '+c.name+'. The UN is relieved. Your base calls it weakness.',{world:+5,economy:+3});
+  },
+  bomb(cid){
+    const c=S.countries[cid]; c.bombed=true;
+    if(c.rel==='tense'||c.rel==='ally')c.rel='hostile'; else c.rel='war';
+    applyFx({world:-15,chaos:+18,legal:+10,approval:-5});
+    popRes('US AIRSTRIKES ON '+c.name.toUpperCase(),'Conventional airstrikes launched on '+c.name+'. UN condemns. Russia calls it escalatory. You tweet it was "very precise and beautiful."',{world:-15,chaos:+18,legal:+10,approval:-5});
+  },
+  moab(cid){
+    const c=S.countries[cid]; c.bombed=true; c.rel='war';
+    applyFx({world:-25,chaos:+28,legal:+18,approval:-10});
+    popRes('MOAB DROPPED ON '+c.name.toUpperCase(),'The Mother of All Bombs deployed on '+c.name+'. Seismographs in 14 countries registered it. You called it "beautiful from a distance."',{world:-25,chaos:+28,legal:+18,approval:-10});
+  },
+  nuke(cid){
+    const c=S.countries[cid]; c.bombed=true; c.rel='war';
+    applyFx({world:-50,chaos:+50,legal:+40,approval:-30});
+    popRes('NUCLEAR STRIKE ON '+c.name.toUpperCase()+' — WORLD IN CRISIS','You launched a nuclear weapon at '+c.name+'. Every hotline rings simultaneously. All of NATO is screaming. Russia is screaming. You are tweeting.',{world:-50,chaos:+50,legal:+40,approval:-30});
+  },
+  annex(cid){
+    const c=S.countries[cid]; c.rel='annexed'; c.annexed=true;
+    const big=['russia','china','india'].includes(cid);
+    const ef=big?{world:-60,chaos:+50,legal:+40,economy:+15}:{world:-40,chaos:+35,legal:+28,economy:+10};
+    applyFx(ef);
+    const flavor=big?'The Security Council convenes. Three nuclear powers go DEFCON 2. You tweet "MINE NOW."':'160 nations vote to condemn. You count the 3 that abstained as strong support.';
+    popRes('UNITED STATES ANNEXES '+c.name.toUpperCase(),'The US has officially annexed '+c.name+'. '+flavor,ef);
+  },
+  deport(cid){
+    const c=S.countries[cid];
+    applyFx({deported:+0.5,approval:+3,economy:-8,world:-12,chaos:+10});
+    popRes('DEPORTATION FLIGHTS TO '+c.name.toUpperCase(),'500,000 deported to '+c.name+'. '+c.name+' reluctantly accepts after US threatens tariffs. Agricultural sector reports labor shortages.',{deported:+0.5,approval:+3,economy:-8,world:-12});
+  },
+};
+
+// ══════════════════════════════════════════════════════════════
+// WORLD MAP — accurate centroids, animations, war system
 // ══════════════════════════════════════════════════════════════
 const RC_MAP={ally:'rc-ally',tense:'rc-tense',hostile:'rc-hostile',war:'rc-war',annexed:'rc-annexed',neutral:'rc-neutral'};
 const RL_MAP={ally:'ALLY',tense:'TENSE',hostile:'HOSTILE',war:'AT WAR',annexed:'ANNEXED',neutral:'NEUTRAL'};
 const RB_MAP={ally:'crb-ally',tense:'crb-tense',hostile:'crb-hostile',war:'crb-war',annexed:'crb-annexed',neutral:'crb-ally'};
 
+// Country centroids in SVG viewBox(0,0,560,290) coordinates
+const CX = {
+  usa:{x:95,y:110}, canada:{x:110,y:52}, mexico:{x:88,y:145},
+  greenland:{x:188,y:28}, iceland:{x:196,y:45},
+  uk:{x:222,y:67}, ireland:{x:210,y:68}, france:{x:236,y:85},
+  spain:{x:228,y:102}, germany:{x:252,y:68}, italy:{x:256,y:92},
+  poland:{x:270,y:64}, ukraine:{x:298,y:68}, balkans:{x:275,y:83},
+  baltics:{x:288,y:54}, scandinavia:{x:260,y:44}, denmark:{x:250,y:62},
+  russia:{x:380,y:40}, turkey:{x:308,y:94},
+  iraq:{x:328,y:114}, iran:{x:362,y:108}, saudi:{x:328,y:144},
+  israel:{x:300,y:114}, gulf:{x:378,y:154}, afghanistan:{x:402,y:102},
+  pakistan:{x:415,y:122},
+  northafrica:{x:244,y:124}, egypt:{x:294,y:120},
+  sudan:{x:316,y:150}, ethiopia:{x:340,y:170},
+  nigeria:{x:252,y:154}, drc:{x:296,y:180},
+  eastafrica:{x:348,y:190}, southafrica:{x:292,y:220}, madagascar:{x:344,y:224},
+  kazakhstan:{x:395,y:82}, india:{x:418,y:148},
+  china:{x:462,y:76}, mongolia:{x:462,y:55},
+  northkorea:{x:500,y:78}, southkorea:{x:504,y:93},
+  japan:{x:522,y:72}, taiwan:{x:505,y:98},
+  seasia:{x:465,y:118}, philippines:{x:505,y:116},
+  indonesia:{x:488,y:145}, australia:{x:488,y:210},
+  newzealand:{x:530,y:245}, panama:{x:118,y:180},
+  colombia:{x:120,y:188}, venezuela:{x:152,y:185},
+  brazil:{x:165,y:215}, peru:{x:102,y:212},
+  argentina:{x:138,y:248}, centralam:{x:114,y:170},
+  cuba:{x:134,y:147},
+};
+
+// USA centroid for animation origin
+const USA_CX = {x:95, y:110};
+
 function initMap(){
   const svg=document.getElementById('wsvg');
-  // Set up all paths
+  if(!svg) return;
   svg.querySelectorAll('[data-cid]').forEach(el=>{
     const cid=el.dataset.cid;
     el.classList.add('map-country');
-    el.onmouseenter=e=>showTip(e,cid);
+    el.onmouseenter=ev=>showTip(ev,cid);
     el.onmouseleave=()=>hideTip();
-    el.onmousemove=e=>moveTip(e);
+    el.onmousemove=ev=>moveTip(ev);
     el.onclick=()=>selectCid(cid);
   });
   updateMapColors();
@@ -1287,67 +1703,331 @@ function updateMapColors(){
   svg.querySelectorAll('[data-cid]').forEach(el=>{
     const cid=el.dataset.cid;
     const c=S.countries[cid];
-    // Remove old rel classes
+    // Reset classes
     el.className.baseVal=el.className.baseVal.replace(/\brc-\w+\b/g,'').replace(/\bselected\b/g,'').trim();
     el.classList.add('map-country');
-    if(c) el.classList.add(RC_MAP[c.rel]||'rc-neutral');
-    else el.classList.add('rc-neutral');
+    if(cid==='usa'){
+      // USA always patriotic blue
+      el.classList.add('rc-usa');
+    } else if(c && c.annexed){
+      // Annexed = American red (animated)
+      el.classList.add('rc-annexed');
+    } else {
+      el.classList.add(c?RC_MAP[c.rel]||'rc-neutral':'rc-neutral');
+    }
     if(openCid===cid) el.classList.add('selected');
+  });
+  // Check annexation win
+  checkAnnexWin();
+}
+
+function checkAnnexWin(){
+  const cs=Object.values(S.countries);
+  const total=cs.filter(c=>!c.noAction).length;
+  const annexed=cs.filter(c=>c.annexed).length;
+  if(total>0 && annexed>=total){
+    document.getElementById('annex-win-score').textContent=Math.round(S.score);
+    document.getElementById('annex-win-count').textContent=annexed;
+    showScreen('annexwin-screen');
+  }
+}
+
+// ── ANIMATIONS ──────────────────────────────────────────────────
+function svgToScreenPct(cx,cy){
+  // Convert SVG viewBox coords to percentage of map-outer element
+  const VW=560, VH=290;
+  return {px:(cx/VW*100)+'%', py:(cy/VH*100)+'%'};
+}
+
+function animProjectile(fromCid, toCid, emoji, duration, onLand){
+  const from=CX[fromCid]||USA_CX;
+  const to=CX[toCid]||{x:280,y:145};
+  const wrap=document.getElementById('anim-layer');
+  if(!wrap) return onLand&&onLand();
+  const el=document.createElement('div');
+  el.className='anim-proj';
+  el.textContent=emoji;
+  const fp=svgToScreenPct(from.x,from.y);
+  el.style.left=fp.px; el.style.top=fp.py;
+  wrap.appendChild(el);
+  const tp=svgToScreenPct(to.x,to.y);
+  // Animate along arc using CSS animation via keyframes injected dynamically
+  const animId='proj'+Date.now();
+  const dx=to.x-from.x, dy=to.y-from.y;
+  const arcH=Math.max(20,Math.sqrt(dx*dx+dy*dy)*0.3);
+  // Use JS animation loop
+  const start=performance.now();
+  function step(now){
+    const t=Math.min(1,(now-start)/duration);
+    const ease=t<0.5?2*t*t:1-2*(1-t)*(1-t);
+    const x=from.x+(to.x-from.x)*ease;
+    const arcY=-(1-(2*ease-1)*(2*ease-1))*arcH;
+    const y=from.y+(to.y-from.y)*ease+arcY;
+    const p=svgToScreenPct(x,y);
+    el.style.left=p.px; el.style.top=p.py;
+    // Rotate toward direction
+    const angle=Math.atan2(to.y-from.y, to.x-from.x)*180/Math.PI;
+    el.style.transform=`translate(-50%,-50%) rotate(${angle}deg)`;
+    if(t<1) requestAnimationFrame(step);
+    else{
+      animExplosion(to.x,to.y,emoji);
+      el.remove();
+      if(onLand) setTimeout(onLand,300);
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+function animExplosion(cx,cy,type){
+  const wrap=document.getElementById('anim-layer');
+  if(!wrap) return;
+  const el=document.createElement('div');
+  el.className='anim-flash';
+  const p=svgToScreenPct(cx,cy);
+  el.style.left=p.px; el.style.top=p.py;
+  if(type==='☢️'||type==='nuke') el.style.background='radial-gradient(circle,#fff,#8e44ad)';
+  else if(type==='💥') el.style.background='radial-gradient(circle,#fff,#ff4400)';
+  else el.style.background='radial-gradient(circle,#fff,#ff8800)';
+  wrap.appendChild(el);
+  setTimeout(()=>el.remove(),800);
+  // Shake the country
+  const svg=document.getElementById('wsvg');
+  if(svg){
+    svg.style.transform='translate(2px,1px)';
+    setTimeout(()=>svg.style.transform='translate(-2px,-1px)',80);
+    setTimeout(()=>svg.style.transform='translate(0,0)',160);
+  }
+}
+
+function animTroops(fromCid,toCid,onArrive){
+  const from=CX[fromCid]||USA_CX;
+  const to=CX[toCid]||{x:280,y:145};
+  const wrap=document.getElementById('anim-layer');
+  if(!wrap) return onArrive&&onArrive();
+  const count=3;
+  let done=0;
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className='anim-proj';
+      el.textContent='🪖';
+      el.style.fontSize='10px';
+      const fp=svgToScreenPct(from.x+Math.random()*8-4, from.y+Math.random()*8-4);
+      el.style.left=fp.px; el.style.top=fp.py;
+      wrap.appendChild(el);
+      const dur=1200+Math.random()*400;
+      const start=performance.now();
+      const jx=to.x+Math.random()*6-3, jy=to.y+Math.random()*6-3;
+      function step(now){
+        const t=Math.min(1,(now-start)/dur);
+        const x=from.x+(jx-from.x)*t;
+        const y=from.y+(jy-from.y)*t;
+        const p=svgToScreenPct(x,y);
+        el.style.left=p.px; el.style.top=p.py;
+        if(t<1) requestAnimationFrame(step);
+        else{
+          el.remove();
+          done++;
+          if(done===count&&onArrive) onArrive();
+        }
+      }
+      requestAnimationFrame(step);
+    }, i*200);
+  }
+}
+
+function animAid(toCid,onDone){
+  const from=USA_CX;
+  const to=CX[toCid]||{x:280,y:145};
+  const wrap=document.getElementById('anim-layer');
+  if(!wrap) return onDone&&onDone();
+  ['💰','📦','💊'].forEach((e,i)=>{
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className='anim-proj';
+      el.textContent=e;
+      const fp=svgToScreenPct(from.x,from.y);
+      el.style.left=fp.px; el.style.top=fp.py;
+      wrap.appendChild(el);
+      const dur=900; const start=performance.now();
+      function step(now){
+        const t=Math.min(1,(now-start)/dur);
+        const arc=-Math.sin(t*Math.PI)*25;
+        const x=from.x+(to.x-from.x)*t;
+        const y=from.y+(to.y-from.y)*t+arc;
+        const p=svgToScreenPct(x,y);
+        el.style.left=p.px; el.style.top=p.py;
+        if(t<1) requestAnimationFrame(step);
+        else{ el.remove(); if(i===2&&onDone) setTimeout(onDone,200); }
+      }
+      requestAnimationFrame(step);
+    },i*180);
   });
 }
 
+// ── WAR STATUS PANEL ────────────────────────────────────────────
+function warStrength(cid){
+  const c=S.countries[cid];
+  if(!c) return 30;
+  const base={northkorea:75,russia:90,china:85,iran:60,iraq:45,venezuela:35,pakistan:55,india:70,
+    uk:65,france:62,germany:60,turkey:50,saudi:45,australia:55,brazil:40,ukraine:50}[cid]||30;
+  const troopBonus=Math.min(30,(c.troops||0)/1000);
+  const bombPenalty=c.bombed?20:0;
+  const warPenalty=c.rel==='war'?-15:0;
+  return Math.max(5,base-bombPenalty+warPenalty);
+}
+
+function usStrength(cid){
+  return 60+Math.min(30,(S.countries[cid]?.troops||0)/500)+(S.economy>50?10:0);
+}
+
+function renderWarPanel(cid){
+  const c=S.countries[cid];
+  if(!c||c.rel!=='war') return '';
+  const us=usStrength(cid), them=warStrength(cid);
+  const total=us+them;
+  const usPct=Math.round(us/total*100);
+  const theirPct=100-usPct;
+  const outlook=usPct>65?'🟢 US WINNING — consider annexing':usPct>45?'🟡 CONTESTED — more troops or airstrikes needed':'🔴 US LOSING — consider peace deal';
+  return `<div class="war-panel">
+    <div class="war-panel-title">⚔️ LIVE WAR: ${c.name.toUpperCase()} <span style="font-size:9px;color:var(--muted)">${c.flag}</span></div>
+    <div style="font-size:9px;color:var(--muted);margin-bottom:5px">Military Strength Comparison</div>
+    <div class="war-bar-wrap">
+      <span style="font-size:8px;color:#1d9bf0;width:20px">🇺🇸</span>
+      <div class="war-bar-bg">
+        <div class="war-bar-us" style="width:${usPct}%"></div>
+      </div>
+      <span style="font-size:8px;color:#aaa;width:28px">${usPct}%</span>
+    </div>
+    <div class="war-bar-wrap">
+      <span style="font-size:8px;color:#e74c3c;width:20px">${c.flag}</span>
+      <div class="war-bar-bg">
+        <div class="war-bar-them" style="width:${theirPct}%;float:right"></div>
+      </div>
+      <span style="font-size:8px;color:#aaa;width:28px">${theirPct}%</span>
+    </div>
+    <div class="war-outcome">${outlook}</div>
+    <div class="war-btn-row">
+      <button class="war-btn escalate" onclick="doMapAct('${cid}','bomb')">💣 Airstrike</button>
+      <button class="war-btn escalate" onclick="doMapAct('${cid}','troops')">🪖 Send Troops</button>
+      ${usPct>60?`<button class="war-btn annex-now" onclick="doMapAct('${cid}','annex')">🏳️ ANNEX NOW</button>`:''}
+      <button class="war-btn peace" onclick="doMapAct('${cid}','peace')">🕊️ Peace Deal</button>
+    </div>
+  </div>`;
+}
+
+// ── TOOLTIP ─────────────────────────────────────────────────────
 function showTip(e,cid){
   const c=S.countries[cid];
+  if(!c) return;
   const tt=document.getElementById('map-tip');
-  const name=c?`${c.flag} ${c.name}`:`Unknown`;
-  const rel=c?RL_MAP[c.rel]||c.rel.toUpperCase():'NEUTRAL';
-  tt.textContent=`${name} — ${rel}`;
+  const troops=c.troops>0?` 🪖${c.troops.toLocaleString()}`:'';
+  tt.textContent=c.flag+' '+c.name+' — '+(RL_MAP[c.rel]||c.rel.toUpperCase())+troops;
   tt.style.display='block';
   moveTip(e);
 }
-function hideTip(){document.getElementById('map-tip').style.display='none';}
+function hideTip(){const tt=document.getElementById('map-tip');if(tt)tt.style.display='none';}
 function moveTip(e){
   const wrap=document.querySelector('.map-outer');
+  if(!wrap) return;
   const rect=wrap.getBoundingClientRect();
   const tt=document.getElementById('map-tip');
+  if(!tt) return;
   let x=e.clientX-rect.left+8, y=e.clientY-rect.top-26;
-  if(x+180>rect.width) x=e.clientX-rect.left-185;
-  if(y<0) y=e.clientY-rect.top+10;
+  if(x+200>rect.width) x=e.clientX-rect.left-205;
+  if(y<0) y=e.clientY-rect.top+12;
   tt.style.left=x+'px'; tt.style.top=y+'px';
 }
 
+// ── COUNTRY PANEL ────────────────────────────────────────────────
 function selectCid(cid){
   openCid=openCid===cid?null:cid;
   updateMapColors();
   const panel=document.getElementById('cpanel');
   if(!openCid){panel.innerHTML='<div class="cp-empty">👆 Click any country on the map</div>';return;}
+  renderCpanel(cid);
+}
+
+function renderCpanel(cid){
   const c=S.countries[cid];
+  const panel=document.getElementById('cpanel');
   if(!c){panel.innerHTML='<div class="cp-empty">No diplomatic data for this region</div>';return;}
   const acts=getMapActions(cid);
   const subs=[];
-  if(c.troops>0) subs.push(`🪖 <b>${c.troops.toLocaleString()}</b> troops`);
-  if(c.bombed) subs.push('💣 Bombed');
-  if(c.annexed) subs.push('🏳️ Annexed');
-  let abHtml=acts.map(a=>`<button class="act-btn ${a.cls}" onclick="doMapAct('${cid}','${a.key}')">${a.label}</button>`).join('');
-  if(!acts.length) abHtml='<div style="grid-column:1/-1;font-size:10px;color:var(--muted);font-style:italic">No diplomatic actions available</div>';
-  panel.innerHTML=`
-    <div class="cp-head">
-      <span class="cp-flag">${c.flag}</span>
-      <div class="cp-nameblk">
-        <div class="cp-cname">${c.name}</div>
-        <span class="cp-rel-badge ${RB_MAP[c.rel]||'crb-ally'}">${RL_MAP[c.rel]||c.rel.toUpperCase()}</span>
-      </div>
-    </div>
-    ${subs.length?`<div class="cp-stats">${subs.map(s=>`<div class="cp-si">${s}</div>`).join('')}</div>`:''}
-    <div class="cp-acts-label">Diplomatic Actions</div>
-    <div class="cp-acts">${abHtml}</div>`;
+  if(c.troops>0) subs.push('🪖 <b>'+c.troops.toLocaleString()+'</b> troops deployed');
+  if(c.bombed) subs.push('💣 Has been bombed');
+  if(c.annexed) subs.push('🏳️ Annexed by USA');
+  let abHtml=acts.map(a=>'<button class="act-btn '+a.cls+'" onclick="doMapAct(\''+cid+'\',\''+a.key+'\')">'+a.label+'</button>').join('');
+  if(!acts.length) abHtml='<div style="grid-column:1/-1;font-size:10px;color:var(--muted);font-style:italic">No actions available</div>';
+
+  const warHTML=renderWarPanel(cid);
+  panel.innerHTML=
+    '<div class="cp-head"><span class="cp-flag">'+c.flag+'</span>'
+    +'<div class="cp-nameblk"><div class="cp-cname">'+c.name+'</div>'
+    +'<span class="cp-rel-badge '+(RB_MAP[c.rel]||'crb-ally')+'">'+(RL_MAP[c.rel]||c.rel.toUpperCase())+'</span>'
+    +'</div></div>'
+    +(subs.length?'<div class="cp-stats">'+subs.map(s=>'<div class="cp-si">'+s+'</div>').join('')+'</div>':'')
+    +warHTML
+    +'<div class="cp-acts-label">Diplomatic Actions</div>'
+    +'<div class="cp-acts">'+abHtml+'</div>';
 }
 
+// ── MAP ACTION DISPATCHER (with animations) ─────────────────────
 function doMapAct(cid,key){
-  if(mapActionFns[key]) mapActionFns[key](cid);
-  updateStats(); updateMapColors();
-  if(openCid===cid) selectCid(cid); // refresh panel
-  pending=()=>{ checkEnd(); };
+  const animMap={
+    bomb: (cb)=>animProjectile('usa',cid,'💣',800,cb),
+    moab: (cb)=>animProjectile('usa',cid,'💥',900,cb),
+    nuke: (cb)=>animProjectile('usa',cid,'☢️',1200,cb),
+    troops:(cb)=>animTroops('usa',cid,cb),
+    aid:  (cb)=>animAid(cid,cb),
+    peace:(cb)=>{ animProjectile('usa',cid,'🕊️',700,cb); },
+    sanction:(cb)=>animProjectile('usa',cid,'📋',600,cb),
+    withdraw:(cb)=>animTroops(cid,'usa',cb),
+    annex:(cb)=>{ animProjectile('usa',cid,'🏳️',600,cb); },
+    deport:(cb)=>animProjectile(cid,'usa',cid==='mexico'?'🚌':'✈️',800,cb),
+  };
+  hideTip();
+  const doAction=()=>{
+    if(mapActionFns[key]) mapActionFns[key](cid);
+    updateStats(); updateMapColors();
+    if(openCid===cid) renderCpanel(cid);
+    pending=()=>{ checkEnd(); };
+  };
+  if(animMap[key]){
+    // Disable buttons while animating
+    document.querySelectorAll('.act-btn,.war-btn').forEach(b=>b.disabled=true);
+    animMap[key](()=>{
+      doAction();
+      document.querySelectorAll('.act-btn,.war-btn').forEach(b=>b.disabled=false);
+    });
+  } else {
+    doAction();
+  }
+}
+
+// ── getMapActions: make all countries annexable via war ──────────
+function getMapActions(cid){
+  const c=S.countries[cid];
+  if(!c||c.noAction) return [];
+  const acts=[];
+  if(c.annexed) return acts;
+  acts.push({label:'💰 Send Aid',      cls:'ab-aid',      key:'aid'});
+  acts.push({label:'📋 Sanction',      cls:'ab-sanction', key:'sanction'});
+  acts.push({label:'🕊️ Peace Deal',   cls:'ab-peace',    key:'peace'});
+  acts.push({label:'🪖 Deploy Troops', cls:'ab-troops',   key:'troops'});
+  if(c.troops>0) acts.push({label:'✈️ Withdraw',cls:'ab-withdraw',key:'withdraw'});
+  if(['tense','hostile','war'].includes(c.rel)){
+    acts.push({label:'💣 Airstrike',   cls:'ab-bomb',     key:'bomb'});
+    acts.push({label:'💥 MOAB Drop',   cls:'ab-moab',     key:'moab'});
+    acts.push({label:'☢️ NUCLEAR',     cls:'ab-nuke',     key:'nuke'});
+  }
+  // Annexable if at war and US is strong enough, OR original annexable flag
+  const usp=usStrength(cid), themp=warStrength(cid);
+  if(c.rel==='war'&&usp>themp) acts.push({label:'🏳️ ANNEX',cls:'ab-annex',key:'annex'});
+  else if(c.annexable) acts.push({label:'🏳️ ANNEX',cls:'ab-annex',key:'annex'});
+  if(['mexico','centralam','venezuela','colombia'].includes(cid))
+    acts.push({label:'🚔 Deport From',cls:'ab-deport',key:'deport'});
+  return acts;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1361,5 +2041,7 @@ function switchTab(id,el){
   if(id==='world') updateMapColors();
 }
 </script>
+
+</body>
 </body>
 </html>
