@@ -293,6 +293,20 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
   <div class="t-warn">⚠️ Political satire. Mocks real controversies for comedic effect. Made for people who lean left. Warning: if you accidentally Make America Great Again, you lose.</div>
 </div>
 
+<!-- ══ GAME MODE SELECTION ══ -->
+<div id="gamemode-screen" class="screen">
+  <div class="flag-row"><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div><div class="fs w"></div><div class="fs r"></div></div>
+  <div class="t-main">CHOOSE YOUR DIFFICULTY</div>
+  <div class="t-sub">Select Your Presidency</div>
+  <div style="margin-top:30px;display:flex;flex-direction:column;gap:20px;max-width:500px;margin-left:auto;margin-right:auto">
+    <button class="btn-play" onclick="startGameMode('sandbox')">🎮 SANDBOX MODE</button>
+    <div style="font-family:'Special Elite',serif;font-size:12px;color:var(--muted);text-align:center;margin-top:-15px">No way to lose. Practice mode with current rules.</div>
+    <button class="btn-play" style="background:rgba(200,16,46,.3);border-color:var(--red)" onclick="startGameMode('real')">⚠️ REAL MODE</button>
+    <div style="font-family:'Special Elite',serif;font-size:12px;color:var(--red);text-align:center;margin-top:-15px">Reach 100% Chaos or Legal and you lose. Are you ready?</div>
+  </div>
+  <button class="btn-play" style="background:transparent;border-color:var(--gold);color:var(--gold);font-size:14px;padding:8px 24px;margin-top:40px;letter-spacing:2px;position:absolute;bottom:20px;left:50%;transform:translateX(-50%)" onclick="showScreen('title-screen')">← BACK</button>
+</div>
+
 <!-- ══ TUTORIAL ══ -->
 <div id="tutorial-screen" class="screen" style="background:radial-gradient(ellipse at center,#0d0a1a 0%,var(--dark) 70%);align-items:center;justify-content:center;padding:24px;overflow-y:auto">
   <div style="max-width:620px;width:100%">
@@ -698,6 +712,26 @@ body{background:var(--dark);color:var(--text);font-family:'Oswald',sans-serif;ov
   <div class="end-reason">Your approval was too high, your economy too stable, your foreign policy too sensible. You accidentally governed well. The game is about chaos. You failed at failing.</div>
   <div class="end-score" style="color:#2ecc71">MAGA Score: <span id="maga-score">0</span></div>
   <button class="btn-restart sec" onclick="startGame()">🔄 TRY TO BE WORSE</button>
+</div>
+
+<!-- REAL MODE: CHAOS LOSS -->
+<div id="chaos-loss-screen" class="screen" style="background:radial-gradient(ellipse at center,#1a0000 0%,var(--dark) 70%);align-items:center;justify-content:center;text-align:center;padding:30px">
+  <div style="font-size:80px;margin-bottom:10px">🔥</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,10vw,100px);color:var(--red);text-shadow:4px 4px 0 rgba(0,0,0,.5)">CHAOS WINS</div>
+  <div style="font-family:'Special Elite',serif;font-size:16px;color:var(--muted);margin:8px 0 16px;font-style:italic">YOUR PRESIDENCY COLLAPSED</div>
+  <div style="font-size:14px;color:var(--text);max-width:500px;margin:0 auto 24px;font-family:'Special Elite',serif;line-height:1.7">Your presidency descended into complete chaos. The nation is in total anarchy. Government services have ceased to function. Congress no longer exists. The military has fragmented into regional warlords. You lose.</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--gold);margin-bottom:20px">Score: <span id="chaos-loss-score">0</span></div>
+  <button class="btn-restart" onclick="startGame()">🔄 TRY AGAIN (LESS CHAOS)</button>
+</div>
+
+<!-- REAL MODE: LEGAL LOSS -->
+<div id="legal-loss-screen" class="screen" style="background:radial-gradient(ellipse at center,#1a1a00 0%,var(--dark) 70%);align-items:center;justify-content:center;text-align:center;padding:30px">
+  <div style="font-size:80px;margin-bottom:10px">⚖️</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,10vw,100px);color:var(--gold);text-shadow:4px 4px 0 var(--red)">CONVICTED</div>
+  <div style="font-family:'Special Elite',serif;font-size:16px;color:var(--muted);margin:8px 0 16px;font-style:italic">THE LAW CAUGHT UP WITH YOU</div>
+  <div style="font-size:14px;color:var(--text);max-width:500px;margin:0 auto 24px;font-family:'Special Elite',serif;line-height:1.7">The legal consequences finally caught up with you. Every agency, every court, every prosecutor has built an airtight case. You are convicted on all counts and sentenced to federal prison. Your presidency is over. You lose.</div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--red);margin-bottom:20px">Score: <span id="legal-loss-score">0</span></div>
+  <button class="btn-restart" onclick="startGame()">🔄 TRY AGAIN (STAY LEGAL)</button>
 </div>
 
 <script>
@@ -2230,7 +2264,11 @@ const EP = [
 // CORE GAME LOOP
 // ══════════════════════════════════════════════════════════════
 function startGame(){
+  showScreen('gamemode-screen');
+}
+function startGameMode(mode){
   S=fresh(); openCid=null; pending=null; usedIds=new Set();
+  S.mode=mode;
   S.nextElectionDay=730;
   clearDecisions();
   showScreen('game-screen'); updateStats(); initMap(); renderIceActions(); loadEvent();
@@ -2315,6 +2353,11 @@ function clamp(v){return Math.max(0,Math.min(100,v));}
 function checkEnd(){
   // ONLY lose condition: Making America Great Again (MAGA hits 100)
   if(S.maga>=100){document.getElementById('maga-score').textContent=Math.round(S.score);showScreen('maga-screen');return true;}
+  // Real mode: Lose if chaos or legal hits 100
+  if(S.mode==='real'){
+    if(S.chaos>=100){showLosScreen('CHAOS WINS','chaos');return true;}
+    if(S.legal>=100){showLosScreen('CONVICTED','legal');return true;}
+  }
   // Win conditions handled by term endings and checkAnnexWin
   const termEndDay={1:1460,2:2921,3:4382,4:5843};
   if(S.day>(termEndDay[S.term]||9999)){
@@ -2409,6 +2452,16 @@ function endGame(r,d){
 function triggerDeathEnding(){
   document.getElementById('death-score').textContent=Math.round(S.score);
   showScreen('death-screen');
+}
+
+function showLosScreen(title,screenId){
+  if(screenId==='chaos'){
+    document.getElementById('chaos-loss-score').textContent=Math.round(S.score);
+    showScreen('chaos-loss-screen');
+  } else if(screenId==='legal'){
+    document.getElementById('legal-loss-score').textContent=Math.round(S.score);
+    showScreen('legal-loss-screen');
+  }
 }
 
 function dayLabel(){
