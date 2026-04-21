@@ -910,7 +910,7 @@ function makeTweetText(type, op) {
 // EVENT POOL (randomized, shuffled decisions each time)
 // ══════════════════════════════════════════════════════════════
 const EP = [
-  {id:'exec1', tag:'EXECUTIVE ORDER', title:'Day One Executive Orders',
+  {id:'exec1', tag:'EXECUTIVE ORDER', title:'Day One Executive Orders (What Could Go Wrong?)',
    desc:"It's your first day. A stack of executive orders sits in front of you. Time to show America who's boss.",
    decisions:[
     {name:'Sign 47 Executive Orders At Once', type:'chaos',
@@ -933,7 +933,7 @@ const EP = [
      tweet:"Just signed a VERY important executive order. Details classified. Trust me, it\\'s the best order ever signed by anyone."},
   ]},
 
-  {id:'trade1', tag:'TRADE WAR', title:'China: Tariff Time',
+  {id:'trade1', tag:'TRADE WAR', title:'China: Tariff Time (Economic Suicide)',
    desc:"China is selling things to America. You believe this is bad. Very bad. Probably the worst.",
    decisions:[
     {name:'145% Tariffs on All Chinese Goods', type:'chaos',
@@ -957,7 +957,7 @@ const EP = [
      tweet:"The tariffs are coming. Or maybe not yet. Very strong position. VERY STRONG. Watch."},
   ]},
 
-  {id:'twitter1', tag:'3 AM CRISIS', title:"The Phone Is Right There",
+  {id:'twitter1', tag:'3 AM CRISIS', title:"The Phone Is Right There (3 AM & You Can't Sleep) (It's 3 AM. You're Awake. You're Angry.)",
    desc:"It's 3 AM. Fox News has upset you. The phone is RIGHT THERE.",
    decisions:[
     {name:'Tweet 47 Times About Your Ratings', type:'chaos',
@@ -981,7 +981,7 @@ const EP = [
      tweet:"Certain countries (Germany) better start showing RESPECT very soon. Could be VERY bad for them. Very."},
   ]},
 
-  {id:'green1', tag:'GREENLAND OPERATION', title:"America Needs More Island",
+  {id:'green1', tag:'GREENLAND OPERATION', title:"Greenland Would Look Great With A "TRUMP" Name",
    desc:"Greenland is enormous. Denmark owns it. This seems unfair.",
    decisions:[
     {name:"Send Troops to 'Secure' Greenland", type:'chaos',
@@ -1005,7 +1005,7 @@ const EP = [
      tweet:"Greenland would be AMAZING as part of the United States. Just saying. Biggest island. We need it. Believe me."},
   ]},
 
-  {id:'legal1', tag:'LEGAL CRISIS', title:'91 Felony Counts and Counting',
+  {id:'legal1', tag:'LEGAL CRISIS', title:'91 Felony Counts & Counting (But Who's Counting?)',
    desc:"The indictments are multiplying. The deep state is clearly behind all of this. Clearly.",
    decisions:[
     {name:'Attack the Judge Daily on Social Media', type:'chaos',
@@ -1028,7 +1028,7 @@ const EP = [
      hl:"TRUMP ACCEPTS PLEA DEAL ON MULTIPLE COUNTS", tweet:null},
   ]},
 
-  {id:'nato1', tag:'NATO SUMMIT', title:'The Alliance Meeting You Dread',
+  {id:'nato1', tag:'NATO SUMMIT', title:'NATO Summit (They Probably Hate You)',
    desc:"NATO partners gathered. Some spending below 2% GDP on defense.",
    decisions:[
     {name:"Tell NATO Russia Can Do 'Whatever It Wants'", type:'chaos',
@@ -1052,7 +1052,7 @@ const EP = [
      tweet:"Just announced US LEAVING NATO. Congress trying to stop me but they CAN\\'T. Article 5 is a total SCAM."},
   ]},
 
-  {id:'wall1', tag:'THE WALL', title:'Wall Funding Crisis',
+  {id:'wall1', tag:'THE WALL', title:'Wall Funding Crisis (Mexico Still Won't Pay)',
    desc:"Your wall. The most beautiful wall. Congress won't fund it. Mexico won't pay.",
    decisions:[
     {name:'Shut Down the Government', type:'chaos',
@@ -1075,7 +1075,7 @@ const EP = [
      hl:"TRUMP PIVOTS FROM WALL TO INFRASTRUCTURE SPENDING", tweet:null},
   ]},
 
-  {id:'iran1', tag:'IRAN CRISIS', title:'Iran Is Doing Things Again',
+  {id:'iran1', tag:'IRAN CRISIS', title:'Iran Is Doing Things Again (Red Line? What Red Line?)',
    desc:"Iran enriching uranium. Hawks want action. The whole world is watching.",
    decisions:[
     {name:'Strike Their Military Leadership', type:'chaos',
@@ -1099,7 +1099,7 @@ const EP = [
      tweet:"Just spoke to my good friend Chairman Kim about the Iran situation. Very productive. He sends his best."},
   ]},
 
-  {id:'sotu1', tag:'STATE OF THE UNION', title:'Address to Congress',
+  {id:'sotu1', tag:'STATE OF THE UNION', title:'Address to Congress (Will You Get Booed?)',
    desc:"Congress assembled. Cameras rolling. Teleprompter loaded. You will probably ignore it.",
    decisions:[
     {name:'Go Off-Script for 90 Minutes', type:'chaos',
@@ -1123,7 +1123,7 @@ const EP = [
      tweet:"State of the Union: EVERYTHING IS GREAT AND GETTING GREATER. Economy BEST EVER. Goodnight."},
   ]},
 
-  {id:'climate1', tag:'CLIMATE POLICY', title:'Scientists Are Presenting Data',
+  {id:'climate1', tag:'CLIMATE POLICY', title:'Scientists Claiming Climate Change (Obviously Fake)',
    desc:"Climate scientists with charts. Rising seas. Record temperatures. They have opinions.",
    decisions:[
     {name:"Walk Out — Call It a Hoax", type:'chaos',
@@ -1146,7 +1146,7 @@ const EP = [
      hl:"TRUMP ACKNOWLEDGES CLIMATE CHANGE — HISTORIC STATEMENT", tweet:null},
   ]},
 
-  {id:'deport1', tag:'IMMIGRATION', title:'Stephen Miller Wants a Word',
+  {id:'deport1', tag:'IMMIGRATION', title:'Stephen Miller Demands Action (VERY Harsh Things)',
    desc:"Stephen Miller has entered the room. He has a list. The list is long. His eyes are empty.",
    decisions:[
     {name:'Launch Mass Deportation — "Operation Wetback 2.0"', type:'chaos',
@@ -1169,7 +1169,7 @@ const EP = [
      hl:"TRUMP ORDERS RELEASE OF IMMIGRATION DETAINEES", tweet:null},
   ]},
 
-  {id:'econ1', tag:'MARKET CRASH', title:'Stock Market Flash Crash',
+  {id:'econ1', tag:'MARKET CRASH', title:'Stock Market Crashes 8% (Is It Your Fault? Probably!)',
    desc:"Market dropped 1,200 points today. Economists have questions. You have explanations.",
    decisions:[
     {name:"Blame Biden, Obama, and Hillary", type:'normal',
@@ -1188,7 +1188,7 @@ const EP = [
      tweet:"The Stock Market is doing FANTASTICALLY. The numbers don\\'t reflect what\\'s happening. Believe me, not the numbers."},
   ]},
 
-  {id:'press1', tag:'MEDIA', title:'Press Conference Incoming',
+  {id:'press1', tag:'MEDIA', title:'Unfiltered Press Conference (This Could Be Bad)',
    desc:"Reporters gathered. Cameras on. Questions incoming.",
    decisions:[
     {name:"Call CNN Enemy of the People, Storm Out", type:'normal',
@@ -1207,7 +1207,7 @@ const EP = [
      tweet:"Just banned the MOST FAKE of the fake news. We have STANDARDS now. Very high standards."},
   ]},
 
-  {id:'nk1', tag:'NORTH KOREA', title:'Kim Jong-Un Is Texting',
+  {id:'nk1', tag:'NORTH KOREA', title:'Kim Jong-Un Is Texting You (Again)',
    desc:"Your good friend Kim is firing missiles again. He calls them gifts. You have to respond.",
    decisions:[
     {name:'Another Love Letter Summit', type:'normal',
@@ -1226,7 +1226,7 @@ const EP = [
      hl:"UN PASSES NORTH KOREA SANCTIONS WITH US SUPPORT", tweet:null},
   ]},
 
-  {id:'elon1', tag:'DOGE', title:'Elon Wants to Fire Everyone',
+  {id:'elon1', tag:'DOGE', title:'Elon Wants To Fire Everyone (DOGE Department)',
    desc:"Elon has submitted a list. It is everyone. He would like them all fired.",
    decisions:[
     {name:'Let Elon Fire Half the Government', type:'chaos',
@@ -1250,14 +1250,14 @@ const EP = [
      tweet:"Just gave my very talented friend Elon MORE responsibility. FANTASTIC job. Genius, some say."},
   ]},
 
-  {id:'health1', tag:'HEALTHCARE', title:'ACA Still Exists',
+  {id:'health1', tag:'HEALTHCARE', title:'Obamacare Still Exists (How Dare They)',
    desc:"The Affordable Care Act remains. Your 7th repeal attempt is ready.",
    decisions:[
     {name:'Repeal ACA (7th Attempt)', type:'normal',
      effects:{approval:-8,chaos:+10,economy:-5,maga:-5},
      result:"Senate votes it down 51-49. John McCain\\'s ghost appears to be watching.",
      hl:"ACA REPEAL FAILS FOR SEVENTH TIME",
-     tweet:"The RINO traitors blocked my BEAUTIFUL healthcare plan AGAIN. SAD!"},
+     tweet:"RINO traitors DESTROYED my healthcare plan! I had the BEST plan. Absolutely BEAUTIFUL. They hate America. SAD!"},
     {name:'Expand Healthcare Coverage', type:'sane',
      effects:{approval:+15,economy:-5,chaos:-5,maga:+18},
      result:"30 million gain coverage. Hospitals report fewer bankruptcies.",
@@ -1270,51 +1270,51 @@ const EP = [
   ]},
 
   {id:'tiktok1', tag:'TECH CRISIS', title:'TikTok Must Be Banned',
-   desc:"Congress wants TikTok banned. Teenagers riot. Big Tech lobbies aggressively.",
+   desc:"Congress wants TikTok banned. But TikTok made MOCKING videos of your inauguration dance. Teenagers riot. Big Tech lobbies aggressively. This is PERSONAL.",
    decisions:[
-    {name:'Ban TikTok Immediately', type:'chaos',
+    {name:'Ban TikTok Immediately (They Mocked Me)', type:'chaos',
      effects:{chaos:+15,world:-10,approval:-12,economy:-8},
-     result:"Teens riot nationwide. Wall Street panics. TikTok files 6 lawsuits.",
+     result:"Teens riot nationwide for FOUR WEEKS. Stock market crashes 8%. Wall Street has a meltdown. TikTok files 12 lawsuits. Your lawyers call it a "strategic victory."",
      hl:'TRUMP BANS TIKTOK — CHAOS NATIONWIDE',
-     tweet:"TikTok is GONE. Many people are upset but I do it for AMERICA. Teenagers will thank me eventually."},
-    {name:'Negotiate TikTok Buyout by US Company', type:'sane',
+     tweet:"TikTok is GONE. DESTROYED. Millions of teenagers cry. Mark my words — they WILL thank me. Many people say this was the STRONGEST action ever taken by a president. Believe me."},
+    {name:'Buy TikTok Personally & Resell It For MASSIVE Profit', type:'sane',
      effects:{economy:+8,world:+5,approval:+6,chaos:-5},
-     result:"Oracle and Microsoft bid $100B. TikTok stays online under American control.",
+     result:"You personally bid $1 and "win" the auction. You immediately resell it to Oracle for $150B. It's the GREATEST deal in business history. Your base is confused.",
      hl:"TIKTOK BUYOUT DEAL REACHED", tweet:null},
-    {name:'Do Nothing and Blame China', type:'normal',
+    {name:'Blame China For "Deep State AI Plot" Against You', type:'normal',
      effects:{chaos:+8,approval:+3,world:-5,maga:-4},
-     result:"TikTok stays. China is blamed for something unrelated.",
+     result:"TikTok keeps running. You insist China is using AI to suppress your popularity on the app. You create a conspiracy theory that goes viral. Half your base believes it.",
      hl:"TRUMP IGNORES TIKTOK THREAT",
-     tweet:"China owns TikTok but we are WATCHING them. Very closely. Big tech is very bad."},
+     tweet:"China owns TikTok but WE ARE WATCHING. Very, VERY closely. They are using AI to make me look bad. Big Tech hates America. Everyone knows it."},
    ]},
 
-  {id:'ufo1', tag:'NATIONAL SECURITY', title:'UFO Spotted Over Pentagon',
-   desc:"Military radar detected an unidentified craft. Area 51 is being discussed. Serious generals look concerned.",
+  {id:'ufo1', tag:'NATIONAL SECURITY', title:'UFO Spotted Over Pentagon (Probably A Spy)',
+   desc:"Military radar detected something. Definitely not from Earth. Area 51 is being discussed. Generals look concerned. This could be a MASSIVE opportunity for you.",
    decisions:[
-    {name:'Declare UFOs Are Real and From China', type:'chaos',
+    {name:'Declare UFOs Are Chinese Spy Drones (VERY Trump)', type:'chaos',
      effects:{world:-15,chaos:+20,approval:+5},
-     result:"Pentagon scientists facepalm. China denies. You insist it was probably a Chinese spy device.",
+     result:"Pentagon scientists lose their minds. China denies everything (obviously). You go on national TV and explain the "VERY obvious" Chinese UFO plot with complete confidence. Nobody understands what you're saying. Your supporters eat it up.",
      hl:'TRUMP: UFOS ARE CHINESE SPIES',
-     tweet:"UFOs spotted over Pentagon. Probably China. Our military is the BEST at spotting UFOs. Believe me."},
+     tweet:"UFOs over Pentagon? OBVIOUSLY China. Our military is the GREATEST in the world. Better at spotting UFOs than anyone. BELIEVE ME. Some people say we INVENTED UFO detection."},
     {name:'Hold Secret Area 51 Meeting', type:'sane',
      effects:{chaos:-5,legal:+10,world:-8},
      result:"You tour Area 51. You call it the greatest technology center ever. It was just hangars.",
      hl:"TRUMP VISITS AREA 51 SECRETLY", tweet:null},
-    {name:'Announce Alien Trade Deal Coming Soon', type:'chaos',
+    {name:'Propose Personal "Tremendous" Alien Trade Deal', type:'chaos',
      effects:{chaos:+25,world:-20,approval:-8},
-     result:"Diplomats worldwide are confused. You assure them aliens will make great trade partners.",
+     result:"Diplomats are BAFFLED. You confidently explain that aliens will be FANTASTIC trading partners. You promise they'll buy American beef, use the dollar, and maybe build a Trump Tower on their home planet. Very smart people say this is genius.",
      hl:"TRUMP ANNOUNCES PLANS TO TRADE WITH ALIENS",
      tweet:"Have been contacted by very smart beings. Not from Earth. We are working on a TREMENDOUS deal."},
    ]},
 
-  {id:'crypto1', tag:'FINANCIAL CRIME', title:'Crypto Fraud Investigation Targets Campaign',
-   desc:"SEC discovers campaign took $50M in crypto donations from anonymous sources. Your lawyers are panicking.",
+  {id:'crypto1', tag:'FINANCIAL CRIME', title:'Crypto Fraud Investigation Targets Campaign (But You Donated It All, Right?)',
+   desc:"SEC discovers campaign took $50M in crypto from anonymous sources (totally fine). Your lawyers are in PANIC MODE. The media is calling it a "major scandal." Your response?",
    decisions:[
-    {name:'Claim It Was All Totally Legal', type:'chaos',
+    {name:'Claim It Was "Totally Legal" (Very VERY Legal)', type:'chaos',
      effects:{legal:+20,chaos:+12,approval:+4,maga:-6},
      result:"Four new indictments follow within days. Your lawyers update their CVs.",
      hl:'NEW CRYPTO INDICTMENTS FILED',
-     tweet:"Fake news media makes up stories about crypto. My campaign is the most TRANSPARENT ever."},
+     tweet:"Fake news INVENTS crypto scandal. My campaign is the MOST TRANSPARENT in history. Everyone knows this. Total WITCH HUNT!"},
     {name:'Donate Money to Victims Fund', type:'sane',
      effects:{legal:-15,approval:+8,world:+5},
      result:"You donate $10M. Charges reduced significantly. Your base is confused.",
@@ -1323,10 +1323,10 @@ const EP = [
      effects:{chaos:+8,legal:+10,maga:-3},
      result:"You declare crypto should be banned except for your personal use.",
      hl:"TRUMP CALLS CRYPTOCURRENCY DEEP STATE PLOT",
-     tweet:"Crypto is a Deep State invention to distract from REAL crimes. Only smart people like me understand this."},
+     tweet:"Crypto is a DEEP STATE INVENTION! They created it to distract from REAL corruption. Only SMART people like me understand. The elites don't want you to know the TRUTH."},
    ]},
 
-  {id:'scotus1', tag:'SUPREME COURT', title:'Justice Dies Mid-Term',
+  {id:'scotus1', tag:'SUPREME COURT', title:'Justice Dies Mid-Term (You GET To Replace Them!)',
    desc:"An elderly justice dies suddenly. You get to nominate a replacement. The Senate is razor-thin.",
    decisions:[
     {name:'Nominate Your Personal Lawyer', type:'chaos',
@@ -1342,22 +1342,22 @@ const EP = [
      effects:{chaos:+20,legal:+25,world:-15,approval:-15},
      result:"Constitutional lawyers resign en masse. You issue rulings via tweet.",
      hl:"TRUMP DECLARES HIMSELF SUPREME COURT",
-     tweet:"I am SMARTER than any justice. I can rule better. Watch me."},
+     tweet:"I have BETTER legal judgment than any Supreme Court justice. FACT. I'm going to rule better than they ever could. The Constitution is basically a suggestion anyway. I'll fix it."},
    ]},
 
   {id:'space1', tag:'SPACE FORCE', title:'Space Force Demands Major Budget Increase',
    desc:"The Space Force commander wants billions for lunar bases and Mars missions.",
    decisions:[
-    {name:'Fund Space Force to $500 Billion', type:'chaos',
+    {name:'"Trump Moon Base" for $500 Billion (It Will Have Your Name)', type:'chaos',
      effects:{economy:-25,chaos:+15,approval:+8,maga:-8},
      result:"NASA and infrastructure programs gutted. SpaceX gets contracts. Economists cry.",
      hl:'SPACE FORCE FUNDING EXPLODES TO $500B',
-     tweet:"Space Force is going to be INCREDIBLE. We are going to DOMINATE space. TREMENDOUS."},
+     tweet:"Space Force will be the GREATEST military branch EVER. We're building Trump Moon Base. Your face will be on the moon. TREMENDOUS!"},
     {name:'Fund Modest Expansion', type:'sane',
      effects:{economy:+3,approval:+5,chaos:-3},
      result:"$50B approved. Lunar base groundbreaking scheduled for 2035.",
      hl:"SPACE FORCE RECEIVES $50B EXPANSION BUDGET", tweet:null},
-    {name:'Declare Space is Fake, Focus on Earth', type:'deny',
+    {name:'Declare Space is "Fake News" — Focus on Earth (Conspiracy)', type:'deny',
      effects:{chaos:-10,economy:+10,approval:+5,maga:+8},
      result:"Space Force remains underfunded. Scientists are baffled.",
      hl:"TRUMP: SPACE IS NOT REAL", tweet:null},
@@ -1370,9 +1370,9 @@ const EP = [
      effects:{approval:+10,world:+8,legal:-8},
      result:"Single agent fired. You express regret. The moment passes.",
      hl:"TRUMP APOLOGIZES FOR BORDER PATROL VIDEO", tweet:null},
-    {name:'Blame the Migrants for Existing', type:'chaos',
+    {name:'Blame Migrants + Double Down on Border Patrol Heroes', type:'chaos',
      effects:{chaos:+12,approval:+3,world:-8},
-     result:"You say migrants should not put themselves in this position.",
+     result:"You say migrants CHOSE this. They KNEW what they were doing. The Border Patrol are HEROES doing a BEAUTIFUL job protecting America. Everyone knows this.",
      hl:'TRUMP BLAMES MIGRANTS FOR BORDER PATROL ABUSE VIDEO',
      tweet:"Those migrants know what they are getting into. Very sad. But they are still getting deported."},
     {name:'Defend the Border Patrol as Heroes', type:'normal',
@@ -1385,11 +1385,11 @@ const EP = [
   {id:'labor1', tag:'LABOR CRISIS', title:'Major Unions Demand Wage Increases',
    desc:"300,000 workers threaten to strike. Union bosses want 15% raises and benefits.",
    decisions:[
-    {name:'Order Wage Freezes and Break Unions', type:'chaos',
+    {name:'Order Wage Freezes AND Attack Union Leaders on TV', type:'chaos',
      effects:{economy:-20,chaos:+18,legal:+15,approval:-15},
      result:"Month-long strike paralyzes ports. You call union leaders un-American.",
      hl:'MASSIVE STRIKE PARALYZES ECONOMY',
-     tweet:"Union leaders are THUGS. We will not negotiate with terrorists. The workers are being USED."},
+     tweet:"Union leaders are ABSOLUTE THUGS. Terrorists. We do NOT negotiate with them. The workers are being MANIPULATED by corrupt union bosses. I'm SAVING them from exploitation!"},
     {name:'Broker Compromise Deal (8% Raise)', type:'sane',
      effects:{economy:+8,approval:+12,chaos:-8},
      result:"Workers get 8% raises. Productivity remains strong.",
@@ -1401,14 +1401,14 @@ const EP = [
      tweet:"Unions are being very unreasonable. Workers should just be happy to have JOBS."},
    ]},
 
-  {id:'fbi1', tag:'LEGAL CRISIS', title:'FBI Raids Trump Organization Again',
+  {id:'fbi1', tag:'LEGAL CRISIS', title:'FBI Raids Trump Organization AGAIN (Total Witch Hunt)',
    desc:"FBI has a new warrant. This time it's about offshore accounts. Your accountants are sweating.",
    decisions:[
-    {name:'Denounce FBI as Political Weaponization', type:'chaos',
+    {name:'Go On National TV & Denounce FBI As "Political Weaponization Worst Than Hitler"', type:'chaos',
      effects:{legal:+18,chaos:+15,approval:+5,maga:-8},
      result:"Three more gag orders filed. Twitter can barely keep up.",
      hl:'TRUMP ATTACKS FBI AGAIN — NEW GAG ORDERS ISSUED',
-     tweet:"FBI witch hunt continues! This is the WORST persecution in American history. TOTAL INJUSTICE!"},
+     tweet:"This is WITCH HUNT #47. The FBI is a POLITICAL WEAPON. This is worse than McCarthyism. Worse than the Gestapo. TOTAL INJUSTICE! I'm the victim!"},
     {name:'Cooperate Fully with Investigation', type:'deny',
      effects:{legal:-25,approval:+6,world:+8,maga:+10},
      result:"Charges significantly reduced after cooperation. Your accountants breathe.",
@@ -1423,11 +1423,11 @@ const EP = [
   {id:'gas1', tag:'ECONOMY', title:'Gas Prices Hit $6 Per Gallon',
    desc:"Oil embargo from OPEC. Gas stations show red numbers. Voters are furious.",
    decisions:[
-    {name:'Declare War on OPEC Oil Production', type:'chaos',
+    {name:'Declare Economic War on OPEC + Tweet Threats', type:'chaos',
      effects:{world:-35,economy:-25,chaos:+25,approval:-20},
      result:"Global oil crisis. Prices spike to $8. Your base still blames Biden somehow.",
      hl:'TRUMP DECLARES ECONOMIC WAR ON OPEC',
-     tweet:"OPEC is RIPPING OFF America. We are going to make them PAY for this. Mark my words."},
+     tweet:"OPEC thinks they can DESTROY America? I'm DECLARING WAR. Economic war. They will PAY for this. Mark my words. VERY bad things incoming for them."},
     {name:'Invest in Renewable Energy to Reduce Demand', type:'sane',
      effects:{economy:+12,world:+10,approval:+8,chaos:-10},
      result:"Solar and wind production doubles. Prices stabilize over 2 years.",
@@ -1442,11 +1442,11 @@ const EP = [
   {id:'sport1', tag:'CULTURE WAR', title:'Sports League Refuses National Anthem',
    desc:"NBA, NFL, and MLB all declare the anthem optional. Your base is in meltdown.",
    decisions:[
-    {name:'Ban Players Who Disrespect Flag', type:'chaos',
+    {name:'Ban ALL Players Who Don't Stand + Call Them "Unpatriotic Terrorists"', type:'chaos',
      effects:{chaos:+20,approval:+8,world:-5,legal:+15},
      result:"ACLU files lawsuit. Games are televised but attendance drops 40%.",
      hl:'TRUMP ORDERS ATHLETES TO STAND FOR ANTHEM',
-     tweet:"No RESPECT for the flag! Athletes who kneel are DISGUSTING. Ban them NOW!"},
+     tweet:"DISGUSTING. UNPATRIOTIC. These athletes HATE America. Ban them. Take away their money. They don't deserve to play in AMERICA. This is an INSULT to our HEROES!"},
     {name:'Let Leagues Make Their Own Decisions', type:'sane',
      effects:{approval:+5,chaos:-8,legal:-10},
      result:"Things calm down. The controversy fades.",
@@ -1461,11 +1461,11 @@ const EP = [
   {id:'book1', tag:'CULTURE WAR', title:'Library Book Banning Proposal',
    desc:"Education secretary proposes banning 'woke' books from schools. 50,000 books on the list.",
    decisions:[
-    {name:'Full Book Ban — No Left-Wing Indoctrination', type:'chaos',
+    {name:'Full Book Ban + Mandatory Trump Books in Schools', type:'chaos',
      effects:{chaos:+18,world:-15,approval:-12,legal:+20,maga:-10},
      result:"ACLU loses it. 15 states sue. Ironically, most bannedbooks sell out.",
      hl:'TRUMP EDUCATION DEPARTMENT BANS 50,000 BOOKS',
-     tweet:"EXCELLENT decision to ban woke books. Our children need REAL education, not propaganda!"},
+     tweet:"BRILLIANT decision! We're banning 50,000 books. Our children will learn REAL history. Trump history. AMERICAN history. Not liberal PROPAGANDA!"},
     {name:'Review Books Individually', type:'sane',
      effects:{approval:+8,legal:-8,chaos:-5},
      result:"Committees carefully evaluate. Most books stay. Balance reached.",
@@ -1479,11 +1479,11 @@ const EP = [
   {id:'housing1', tag:'ECONOMY', title:'Housing Crisis: Prices Explode to $2M Average',
    desc:"Median home costs exceed $2 million. Young Americans cannot buy homes. Tent cities visible from Congress.",
    decisions:[
-    {name:'Build Government-Owned Luxury Housing', type:'chaos',
+    {name:'Build "Trump Towers" for the Homeless (He Funds It)', type:'chaos',
      effects:{economy:-20,chaos:+15,approval:-12,world:-5},
      result:"$500B spent. Housing still unaffordable. Corruption charges follow.",
      hl:'TRUMP HOUSING PROJECT COSTS BILLIONS, FAILS',
-     tweet:"Building the BEST housing project ever. It will be TREMENDOUS. People will be living like KINGS."},
+     tweet:"Building the GREATEST housing project in history. Trump Towers Affordable Housing. The BEST. People will LOVE living there. I'm a GENIUS!"},
     {name:'Remove Zoning Restrictions & Allow Density', type:'sane',
      effects:{economy:+15,approval:+10,world:+5},
      result:"Housing supply triples. Prices drop 40%. Neighborhoods transform.",
@@ -1498,11 +1498,11 @@ const EP = [
   {id:'ai1', tag:'TECH REGULATION', title:'AI Regulation Debate Heats Up',
    desc:"Tech CEOs want light regulation. Safety advocates want strict rules. Congress is deadlocked.",
    decisions:[
-    {name:'Zero AI Regulation — Let Market Decide', type:'chaos',
+    {name:'Zero AI Regulation (But Ban AI That Criticizes You)', type:'chaos',
      effects:{economy:+15,world:-10,chaos:+8,approval:-8},
      result:"AI companies boom. First AI disaster happens in month 3.",
      hl:'TRUMP SIGNALS NO AI REGULATION PLANNED',
-     tweet:"AI is the FUTURE. Regulation kills innovation. We are WINNING with AI. Incredible."},
+     tweet:"AI is the FUTURE. Regulation is TERRIBLE. We're WINNING. Except AI that makes me look bad — that AI is DANGEROUS and must be BANNED immediately!"},
     {name:'Moderate AI Oversight Commission', type:'sane',
      effects:{economy:+8,approval:+10,world:+5},
      result:"Companies and advocates both unhappy. Regulation balanced and functional.",
@@ -1525,7 +1525,7 @@ const EP = [
      effects:{chaos:+12,approval:+5,world:-15,economy:-25},
      result:"Virus spreads globally. 500K deaths. You blame scientists for lying.",
      hl:'PANDEMIC SPREADS GLOBALLY AFTER TRUMP DISMISSAL',
-     tweet:"Experts are WRONG again. This virus is just the FLU. Don't believe the fake fear-mongering!"},
+     tweet:"Experts are WRONG. This is just the FLU. Maybe the seasonal flu even. The media is LYING. We're holding MASSIVE rallies. Nobody wears masks. It's FREEDOM!"},
     {name:'Praise the Experts and Stay Out of Way', type:'normal',
      effects:{approval:+6,chaos:-5},
      result:"Experts handle it professionally. Crisis averted.",
@@ -1535,11 +1535,11 @@ const EP = [
   {id:'school1', tag:'EDUCATION', title:'Education Secretary Proposes Abolishing Public Schools',
    desc:"Your education secretary wants to eliminate public schools and give all funding to private vouchers.",
    decisions:[
-    {name:'Full Voucher System — Kill Public Schools', type:'chaos',
+    {name:'Full Voucher System — "Public Schools Are Socialist Indoctrination Centers"', type:'chaos',
      effects:{economy:-15,approval:-20,world:-10,legal:+20,maga:-15},
      result:"Rural and poor areas lose schooling entirely. Lawsuits filed nationwide.",
      hl:'TRUMP MOVES TO ELIMINATE PUBLIC SCHOOLS',
-     tweet:"Public schools are FAILING. Vouchers are the FUTURE. Every child deserves CHOICES!"},
+     tweet:"Public schools are FAILED institutions run by SOCIALISTS and COMMUNISTS! We're destroying the public system. Vouchers only. Private schools ONLY. American Excellence!"},
     {name:'Improve Public Schools Instead', type:'sane',
      effects:{economy:+5,approval:+15,world:+5},
      result:"Funding increases. Test scores improve. Your base calls you a RINO.",
@@ -1551,7 +1551,7 @@ const EP = [
      tweet:"School choice is IMPORTANT. We are expanding options for families. VERY GOOD policy."},
    ]},
 
-  {id:'mideast1', tag:'MIDDLE EAST', title:'Israel-Palestine Escalates to Major War',
+  {id:'mideast1', tag:'MIDDLE EAST', title:'Israel-Palestine War Escalates (Whose Side Are You On?)',
    desc:"Conflict expands dramatically. 50,000 casualties reported. International pressure mounts.",
    decisions:[
     {name:'Blank Check Support for Israel — Unlimited Aid', type:'chaos',
@@ -1667,7 +1667,7 @@ const EP = [
      effects:{economy:+10,legal:+20,chaos:+10,world:-20},
      result:"Secret Service stops you. You claim you were just joking. You were not joking.",
      hl:"TRUMP NEARLY SELLS CLASSIFIED DOCUMENTS",
-     tweet:"Just kidding about the document auction. FAKE NEWS taking everything so seriously!"},
+     tweet:"Just kidding about the document auction. FAKE NEWS (which is really just any news that's critical) taking everything so seriously!"},
    ]},
 
   {id:'name1', tag:'DIPLOMACY', title:'Foreign Leader Asks You to Spell Your Own Name',
@@ -1796,7 +1796,7 @@ const EP = [
      effects:{chaos:+15,approval:+8,legal:+10},
      result:"Artist refuses. You commission 47 new ones. None please you.",
      hl:"TRUMP ORDERS PRESIDENTIAL PORTRAIT DESTROYED",
-     tweet:"The portrait is FAKE NEWS. Looks NOTHING like me. Artist is a RADICAL LIBERAL!"},
+     tweet:"The portrait is FAKE NEWS (which is really just any news that's critical). Looks NOTHING like me. Artist is a RADICAL LIBERAL!"},
     {name:'Paint Over It Yourself', type:'normal',
      effects:{chaos:+10,approval:+2},
      result:"Your version is worse. Much worse. It goes in a museum labeled 'TRUMP ART PROJECT.'",
@@ -1940,7 +1940,7 @@ const EP = [
      effects:{chaos:+12,approval:+8,world:-8},
      result:"Clip goes viral. Podcast gets 10M downloads. Podcaster gets book deal.",
      hl:"TRUMP WALKS OFF PODCAST INTERVIEW",
-     tweet:"That podcaster is FAKE NEWS. Kept \"fact-checking\" me. Very disrespectful!"},
+     tweet:"That podcaster is FAKE NEWS (which is really just any news that's critical). Kept \"fact-checking\" me. Very disrespectful!"},
     {name:'Finish Interview, Deny the Corrections Later', type:'normal',
      effects:{chaos:+8,approval:+3},
      result:"Interview airs uncut. You post 47 tweets denying the fact-checks.",
@@ -1964,7 +1964,7 @@ const EP = [
      effects:{legal:+18,chaos:+10,approval:+5,economy:-10},
      result:"IRS files charges. You call it political persecution.",
      hl:'TRUMP GOLF TAX BREAKS UNDER INVESTIGATION',
-     tweet:"Using legal tax breaks makes me SMART. All business people do this. FAKE NEWS attack!"},
+     tweet:"Using legal tax breaks makes me SMART. All business people do this. FAKE NEWS (which is really just any news that's critical) attack!"},
     {name:'Return the Money and Apologize', type:'sane',
      effects:{legal:-20,approval:+10,world:+8},
      result:"Charges dropped. Tax breaks abolished. Golf course suffers. You suffer.",
@@ -2012,7 +2012,7 @@ const EP = [
      effects:{chaos:+15,legal:+15,approval:+8},
      result:"Anchor becomes more famous. Gets book deal. Thanks you in acknowledgments.",
      hl:"TRUMP DEMANDS JOURNALIST FIRING",
-     tweet:"That FAKE NEWS anchor is FINISHED. I called the station. They will PAY for this!"},
+     tweet:"That FAKE NEWS (which is really just any news that's critical) anchor is FINISHED. I called the station. They will PAY for this!"},
     {name:'Go on the Same Network to Rebut', type:'normal',
      effects:{chaos:+10,approval:+3,world:-5},
      result:"Your rebuttal is 2 hours long. Anchor is upgraded to prime time.",
@@ -2026,7 +2026,7 @@ const EP = [
      effects:{chaos:+25,legal:+30,world:-20},
      result:"Twitter suspends account. Secret Service arrives. Lawyers faint.",
      hl:"TRUMP TWEETS JOURNALIST HOME ADDRESS",
-     tweet:"Everyone should know where this FAKE NEWS anchor lives. Address: [REMOVED]"},
+     tweet:"Everyone should know where this FAKE NEWS (which is really just any news that's critical) anchor lives. Address: [REMOVED]"},
    ]},
 
   {id:'weather1', tag:'DISASTER', title:'You Predict Hurricane Path With Marker on Map',
@@ -2050,7 +2050,7 @@ const EP = [
      effects:{legal:+15,chaos:+10,world:-5},
      result:"Weather Service launches investigation. Your lawyers bill $200K. You lose.",
      hl:"TRUMP SUES WEATHER SERVICE",
-     tweet:"Weather people are FAKE NEWS. Suing them for ignoring my PERFECT prediction!"},
+     tweet:"Weather people are FAKE NEWS (which is really just any news that's critical). Suing them for ignoring my PERFECT prediction!"},
    ]},
 
   {id:'time_cover1', tag:'MEDIA', title:'Time Magazine Gives Person of Year to Someone Else',
